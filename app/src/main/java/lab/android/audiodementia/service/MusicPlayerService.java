@@ -129,6 +129,7 @@ public class MusicPlayerService extends Service implements
         player.setOnPreparedListener(this);
         player.setOnErrorListener(this);
         player.setOnCompletionListener(this);
+        player.setAudioStreamType(AudioManager.STREAM_MUSIC);
     }
 
     // TODO: Media Session
