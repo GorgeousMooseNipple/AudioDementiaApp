@@ -187,9 +187,7 @@ public class MusicFragment extends Fragment
             loadMoreProgress.setVisibility(View.GONE);
         if (event.isSuccess()) {
             ArrayList<Song> songs = (ArrayList<Song>) event.getData();
-            if(songs.size() > 0) {
-                setRecyclerDataSong(songs);
-            }
+            setRecyclerDataSong(songs);
         }
         else {
             AlertDialogGenerator.MakeAlertDialog(getActivity(), "Loading songs error", event.getMessage());
@@ -208,9 +206,7 @@ public class MusicFragment extends Fragment
             loadMoreProgress.setVisibility(View.GONE);
         if (event.isSuccess()) {
             ArrayList<Album> albums = (ArrayList<Album>) event.getData();
-            if(albums.size() > 0){
-                setRecyclerDataAlbum(albums);
-            }
+            setRecyclerDataAlbum(albums);
         }
         else {
             AlertDialogGenerator.MakeAlertDialog(getActivity(), "Loading albums error", event.getMessage());
@@ -270,7 +266,7 @@ public class MusicFragment extends Fragment
             }
         }
         else {
-            searchMessage.setText("Песен не найдено");
+            searchMessage.setText("No songs found");
             switchRecyclerView(false);
         }
     }
@@ -317,7 +313,7 @@ public class MusicFragment extends Fragment
             }
         }
         else {
-            searchMessage.setText("Альбомов не найдено");
+            searchMessage.setText("No albums found");
             switchRecyclerView(false);
         }
     }
