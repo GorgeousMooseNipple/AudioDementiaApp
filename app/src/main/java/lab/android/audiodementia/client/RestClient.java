@@ -415,19 +415,21 @@ public class RestClient {
         }
     }
 
-    public static HttpResponse addSongToPlaylist(long songId, long playlistId) {
-        Map<String, String> params = new HashMap<String, String>();
+    public static HttpResponse addSongToPlaylist(long songId, long playlistId, String userToken) {
+        Map<String, String> params = new HashMap<>();
         params.put("song_id", String.valueOf(songId));
         params.put("playlist_id", String.valueOf(playlistId));
+        Map<String, String> headers = new HashMap<>();
+        headers.put("Authorization", String.format("Bearer %s", userToken));
         try {
             URL url = new URL(BASE_URL + "/media/playlists/add/song");
-            JSONObject response = requestWithData("PUT", url, params);
+            JSONObject response = requestWithDataAndHeaders("PUT", url, params, headers);
 
             String message = response.getString("message");
             return new HttpResponse(true, message);
         }
         catch (Exception e) {
-            return null;
+            return new HttpResponse(false, e.getMessage());
         }
     }
 

@@ -119,6 +119,7 @@ public class PlayerFragment extends Fragment {
         catch (RemoteException e) {
             mediaController = null;
         }
+        backgroundHttpExecutor = new BackgroundHttpExecutor();
     }
 
     @Override
@@ -236,9 +237,9 @@ public class PlayerFragment extends Fragment {
                     String durationTime =
                             String.format(Locale.getDefault(),
                                     "%02d:%02d",
-                                    TimeUnit.MILLISECONDS.toMinutes(currentSongDuration),
-                                    TimeUnit.MILLISECONDS.toSeconds(currentSongDuration) -
-                                            TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(currentSongDuration)));
+                                    TimeUnit.SECONDS.toMinutes(currentSongDuration),
+                                    currentSongDuration -
+                                            TimeUnit.MINUTES.toSeconds(TimeUnit.SECONDS.toMinutes(currentSongDuration)));
                     songDuration.setText(durationTime);
                     seekBar.setMax((int)currentSongDuration);
                 }
@@ -265,9 +266,9 @@ public class PlayerFragment extends Fragment {
                         seekBar.setProgress(curPos);
                         String curTime = String.format(Locale.getDefault(),
                                 "%02d:%02d/",
-                                TimeUnit.MILLISECONDS.toMinutes(curPos),
-                                TimeUnit.MILLISECONDS.toSeconds(curPos) -
-                                        TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(curPos)));
+                                TimeUnit.SECONDS.toMinutes(curPos),
+                                curPos -
+                                        TimeUnit.MINUTES.toSeconds(TimeUnit.SECONDS.toMinutes(curPos)));
                         currentTime.setText(curTime);
                     }
                     seekBarHandler.postDelayed(this, 1000);
@@ -311,17 +312,6 @@ public class PlayerFragment extends Fragment {
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
-    public void onEvent(PlaylistsUploadedEvent event) {
-        if (event.isSuccessful()) {
-            onDialogClick.playlists = event.getEntity();
-            onDialogClick.adapter = new RecyclerViewPlaylistAdapter(onDialogClick.playlists);
-        }
-        else {
-            AlertDialogGenerator.MakeAlertDialog(getActivity(), "Error while loading playlists", event.getMessage());
-        }
-    }
-
-    @Subscribe(threadMode = ThreadMode.MAIN)
     public void onEvent(NewPlaylistAddedEvent event) {
         if (event.isSuccess()) {
             Playlist newPlaylist = event.getPlaylist();
@@ -338,7 +328,7 @@ public class PlayerFragment extends Fragment {
         background.execute(new Runnable() {
             @Override
             public void run() {
-                RestClient.addSongToPlaylist(song_id, playlist_id);
+                RestClient.addSongToPlaylist(song_id, playlist_id, session.getToken());
             }
         });
     }
@@ -371,7 +361,7 @@ public class PlayerFragment extends Fragment {
         @Override
         public void onClick(View v) {
             final AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-            builder.setTitle("Добавить песню в плейлист");
+            builder.setTitle("Add song to playlist");
             View viewInflated =
                     LayoutInflater.from(getActivity()).inflate(
                             R.layout.add_to_playlist_dialog, (ViewGroup) getView(), false);
@@ -387,7 +377,7 @@ public class PlayerFragment extends Fragment {
                     Playlist playlist = (Playlist)obj;
                     addSongToPlaylist(playlist.get_ID());
                     Toast.makeText(
-                            getActivity(), "Песня добавлена в плейлист " + playlist.getTitle(),
+                            getActivity(), "Song added to playlist  " + playlist.getTitle(),
                             Toast.LENGTH_SHORT).show();
                 }
 
