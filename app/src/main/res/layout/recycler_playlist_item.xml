@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="75dp"
+    android:gravity="center"
+    android:paddingTop="10dp">
+
+    <View
+        android:id="@+id/playlist_item_center"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_centerInParent="true"/>
+
+    <ImageView
+        android:contentDescription="@string/app_logo"
+        android:id="@+id/playlist_thumbnail"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:layout_marginStart="38dp"
+        android:src="@mipmap/playlist_icon" />
+
+    <TextView
+        android:id="@+id/playlist_item_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/playlist_title"
+        android:layout_toEndOf="@id/playlist_thumbnail"
+        android:layout_marginStart="28dp"
+        android:layout_marginTop="8dp"
+        android:ellipsize="end"
+        android:gravity="start"
+        android:maxLines="1"/>
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_toEndOf="@id/playlist_thumbnail"
+        android:layout_below="@id/playlist_item_title"
+        android:layout_marginStart="28dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/playlist_track_num_title"
+            android:textSize="12sp"
+            android:ellipsize="end"
+            android:gravity="start"
+            android:maxLines="1"/>
+
+        <TextView
+            android:id="@+id/playlist_track_num"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/playlist_track_num"
+            android:textSize="12sp"
+            android:layout_marginStart="4dp"/>
+
+    </LinearLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/colorBackLight"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="4dp"
+        android:layout_marginStart="30dp"
+        android:layout_marginEnd="30dp"/>
+
+</RelativeLayout>

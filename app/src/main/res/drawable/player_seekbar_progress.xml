@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:gravity="center_vertical"
+        android:height="2dp">
+
+        <shape android:shape="rectangle">
+            <corners android:radius="5dp"/>
+            <gradient
+                android:angle="90"
+                android:startColor="@color/playerSeekbarEnd"
+                android:centerColor="@color/playerSeekbarCenter"
+                android:endColor="@color/playerSeekbarStart"
+                android:centerY="0.2"
+                android:type="linear" />
+        </shape>
+
+    </item>
+
+    <item
+        android:gravity="center_vertical"
+        android:height="2dp">
+
+        <clip>
+            <shape android:shape="rectangle">
+                <corners android:radius="5dp"/>
+                <solid android:color="@color/playerSeekbarFill" />
+            </shape>
+        </clip>
+
+    </item>
+
+</layer-list>

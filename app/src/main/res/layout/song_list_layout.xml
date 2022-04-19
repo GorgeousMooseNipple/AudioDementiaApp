@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout  xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_height="match_parent"
+    android:layout_width="match_parent"
+    android:orientation="vertical">
+
+    <ViewSwitcher
+        android:id="@+id/song_list_switcher"
+        android:layout_width="match_parent"
+        android:layout_height="460dp"
+        android:layout_margin="20dp"
+        android:inAnimation="@android:anim/fade_in"
+        android:outAnimation="@android:anim/fade_out">
+
+        <TextView
+            android:id="@+id/song_list_empty_message"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:textSize="16sp"
+            android:text="@string/empty_songs"/>
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/song_list_recycler"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:scrollbarThumbVertical="@color/scrollbar"
+            android:scrollbarFadeDuration="1500"
+            android:scrollbars="vertical"
+            android:scrollbarSize="4dp">
+        </android.support.v7.widget.RecyclerView>
+
+    </ViewSwitcher>
+
+    <ProgressBar
+        android:id="@+id/song_list_load_progress"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_gravity="center_horizontal"
+        android:visibility="gone" />
+
+</LinearLayout>
+
+
+

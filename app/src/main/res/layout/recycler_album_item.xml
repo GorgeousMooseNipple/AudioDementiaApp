@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="170dp"
+    android:layout_height="195dp"
+    android:layout_margin="2dp"
+    android:orientation="vertical"
+    android:layout_gravity="center_horizontal"
+    android:gravity="center_horizontal"
+    android:background="@color/colorBackDark">
+
+    <ImageView
+        android:id="@+id/recycler_album_cover"
+        android:layout_width="150dp"
+        android:layout_height="150dp"
+        android:src="@mipmap/default_album_cover2"
+        android:contentDescription="@string/player_album_cover"
+        android:layout_marginTop="10dp"
+        android:background="@android:color/white"/>
+
+    <TextView
+        android:id="@+id/recycler_album_artist"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/song_artist_placeholder"
+        android:maxLines="1"
+        android:ellipsize="end"
+        android:gravity="start"
+        android:textSize="12sp"
+        android:textColor="@color/colorText"/>
+
+    <TextView
+        android:id="@+id/recycler_album_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/song_album_placeholder"
+        android:maxLines="1"
+        android:ellipsize="end"
+        android:gravity="start"
+        android:textSize="12sp"
+        android:textColor="@color/colorText"/>
+
+
+</LinearLayout>

@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@mipmap/komb_2"
+        android:layout_marginStart="14dp"
+        android:layout_marginTop="18dp"
+        android:contentDescription="@string/app_logo"/>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/main_layout_genres"
+        android:textSize="20sp"
+        android:gravity="center_horizontal"
+        android:layout_marginTop="5dp"
+        android:layout_marginBottom="2dp"/>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="2dp"
+        android:layout_marginEnd="20dp"
+        android:layout_marginStart="20dp"
+        android:background="@color/colorBackDark"/>
+
+    <ViewSwitcher
+        android:id="@+id/main_genres_recycler_switcher"
+        android:layout_width="match_parent"
+        android:layout_height="150dp"
+        android:layout_marginTop="6dp"
+        android:layout_marginStart="4dp"
+        android:layout_marginEnd="4dp"
+        android:inAnimation="@android:anim/fade_in"
+        android:outAnimation="@android:anim/fade_out">
+
+        <TextView
+            android:id="@+id/main_genres_empty"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/empty_genres"
+            android:textSize="14sp"
+            android:layout_gravity="center"/>
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/main_genre_recycler"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:scrollbarThumbVertical="@color/scrollbar"
+            android:scrollbarFadeDuration="1500"
+            android:scrollbars="vertical"
+            android:scrollbarSize="4dp">
+        </android.support.v7.widget.RecyclerView>
+
+    </ViewSwitcher>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/main_layout_playlists"
+        android:textSize="20sp"
+        android:gravity="center_horizontal"
+        android:layout_marginTop="15dp"/>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="2dp"
+        android:layout_marginStart="20dp"
+        android:layout_marginEnd="20dp"
+        android:background="@color/colorBackDark"/>
+
+    <ViewSwitcher
+        android:id="@+id/main_playlist_recycler_switcher"
+        android:layout_width="match_parent"
+        android:layout_height="150dp"
+        android:layout_marginTop="6dp"
+        android:layout_marginStart="4dp"
+        android:layout_marginEnd="4dp"
+        android:inAnimation="@android:anim/fade_in"
+        android:outAnimation="@android:anim/fade_out">
+
+
+        <TextView
+            android:id="@+id/main_playlists_empty"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/empty_playlists"
+            android:layout_gravity="center"
+            android:textSize="14sp"/>
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/main_playlists_recycler"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:scrollbarThumbVertical="@color/scrollbar"
+            android:scrollbarFadeDuration="1500"
+            android:scrollbars="vertical"
+            android:scrollbarSize="4dp">
+        </android.support.v7.widget.RecyclerView>
+
+    </ViewSwitcher>
+
+
+</LinearLayout>

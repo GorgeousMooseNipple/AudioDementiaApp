@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical">
+
+    <RelativeLayout
+        android:id="@+id/search_label_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="25dp">
+
+        <TextView
+            android:id="@+id/search_label"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/music_search"
+            android:textSize="18sp"
+            android:layout_marginStart="18dp"
+            android:layout_marginBottom="10dp"/>
+
+        <android.support.v7.widget.SearchView
+            android:id="@+id/search_input"
+            android:layout_width="340dp"
+            android:layout_height="50dp"
+            android:layout_margin="4dp"
+            android:layout_below="@id/search_label"
+            android:iconifiedByDefault="false"
+            app:iconifiedByDefault="false">
+        </android.support.v7.widget.SearchView>
+
+        <Spinner
+            android:id="@+id/search_spinner"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="200dp"
+            android:spinnerMode="dropdown">
+        </Spinner>
+
+    </RelativeLayout>
+
+    <ViewSwitcher
+        android:id="@+id/music_recycler_switcher"
+        android:layout_width="match_parent"
+        android:layout_height="360dp"
+        android:layout_marginTop="6dp"
+        android:layout_marginStart="4dp"
+        android:layout_marginEnd="4dp"
+        android:inAnimation="@android:anim/fade_in"
+        android:outAnimation="@android:anim/fade_out">
+
+        <TextView
+            android:id="@+id/music_search_message"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:textSize="16sp"
+            android:text="@string/music_start_search"/>
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/music_recycler"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:scrollbarThumbVertical="@color/scrollbar"
+            android:scrollbarFadeDuration="1500"
+            android:scrollbars="vertical"
+            android:scrollbarSize="4dp">
+        </android.support.v7.widget.RecyclerView>
+
+    </ViewSwitcher>
+
+    <ProgressBar
+        android:id="@+id/music_load_progress"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_gravity="center_horizontal"
+        android:visibility="gone" />
+
+</LinearLayout>

@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="30dp"
+        android:text="@string/playlists_title"
+        android:textSize="18sp"
+        android:layout_marginTop="30dp"/>
+
+    <View
+        android:layout_width="wrap_content"
+        android:layout_height="2dp"
+        android:background="@color/colorBackLight"
+        android:layout_margin="20dp"/>
+
+    <ViewSwitcher
+        android:id="@+id/playlists_recycler_switcher"
+        android:layout_width="match_parent"
+        android:layout_height="350dp"
+        android:layout_margin="6dp">
+
+        <TextView
+            android:id="@+id/playlists_empty_message"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:text="@string/empty_playlists"/>
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/playlists_recycler"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:scrollbarThumbVertical="@color/scrollbar"
+            android:scrollbarFadeDuration="1500"
+            android:scrollbars="vertical"
+            android:scrollbarSize="4dp">
+        </android.support.v7.widget.RecyclerView>
+
+    </ViewSwitcher>
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <ImageButton
+            android:id="@+id/playlist_add_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:layout_marginStart="8dp"
+            android:contentDescription="@string/playlists_add"
+            android:src="@android:drawable/ic_input_add"
+            android:background="@drawable/playlists_add_button"
+            android:tint="@color/colorText"
+            />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/playlists_add_new"
+            android:textSize="12sp"
+            android:layout_marginStart="10dp"
+            android:layout_marginTop="1dp"/>
+
+    </LinearLayout>
+
+</LinearLayout>

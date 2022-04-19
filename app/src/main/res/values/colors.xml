@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimary">#3F51B5</color>
+    <color name="colorPrimaryDark">#3c4056</color>
+    <color name="colorAccent">#FF4081</color>
+    <color name="colorText">#DDDDDD</color>
+    <color name="colorBackLight">#2F2F2F</color>
+    <color name="colorBackDark">#1F1F1F</color>
+    <color name="colorBackPlayer">#9F9F9F</color>
+    <color name="scrollbar">#888888</color>
+    <color name="playerSeekbarThumb">#0b899f</color>
+    <color name="playerSeekbarFill">#3f9dc9</color>
+    <color name="playerSeekbarStart">#d4dedf</color>
+    <color name="playerSeekbarCenter">#909999</color>
+    <color name="playerSeekbarEnd">#5f6668</color>
+    <color name="playerButtonsBack">#d6d6d6</color>
+</resources>

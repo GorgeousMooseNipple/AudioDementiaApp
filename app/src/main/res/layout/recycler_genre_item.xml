@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="75dp"
+    android:gravity="center_vertical">
+
+    <ImageView
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        android:src="@mipmap/genre_icon"
+        android:contentDescription="@string/genre_cover"
+        android:layout_marginStart="20dp" />
+
+    <TextView
+        android:id="@+id/recycler_genre_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/genre_name"
+        android:textSize="18sp"
+        android:layout_marginStart="30dp"/>
+
+</LinearLayout>

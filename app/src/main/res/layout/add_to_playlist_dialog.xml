@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="200dp"
+    android:layout_height="350dp"
+    android:orientation="vertical"
+    android:layout_gravity="center"
+    android:gravity="center_horizontal"
+    android:background="@color/colorBackPlayer">
+
+    <ViewSwitcher
+        android:id="@+id/add_to_playlist_switcher"
+        android:layout_width="match_parent"
+        android:layout_height="240dp"
+        android:layout_margin="6dp">
+
+        <TextView
+            android:id="@+id/add_to_playlist_empty"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:text="@string/empty_playlists"
+            android:textSize="14sp"/>
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/add_to_playlist_recycler"
+            android:layout_width="match_parent"
+            android:layout_height="240dp"
+            android:layout_margin="6dp"
+            android:scrollbarThumbVertical="@color/scrollbar"
+            android:scrollbarFadeDuration="1500"
+            android:scrollbars="vertical"
+            android:scrollbarSize="4dp">
+        </android.support.v7.widget.RecyclerView>
+    </ViewSwitcher>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <ImageButton
+            android:id="@+id/add_to_playlist_new_btn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:layout_marginStart="14dp"
+            android:contentDescription="@string/playlists_add"
+            android:src="@android:drawable/ic_input_add"
+            android:background="@drawable/playlists_add_button"
+            android:tint="@color/colorText"
+            />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/playlists_add_new"
+            android:textSize="12sp"
+            android:layout_marginStart="14dp"
+            android:layout_marginTop="1dp"
+            android:textColor="@color/colorText"/>
+
+    </LinearLayout>
+
+
+</LinearLayout>

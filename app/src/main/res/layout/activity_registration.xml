@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="50dp"
+    android:gravity="center">
+
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@mipmap/komb_2"
+        android:layout_marginEnd="90dp"
+        android:contentDescription="@string/app_logo"/>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/registration_title"
+        android:layout_margin="10dp"
+        android:textSize="20sp"/>
+
+    <EditText
+        android:id="@+id/registration_login_input"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="@string/login_username"
+        android:layout_marginStart="10dp"
+        android:layout_marginEnd="10dp"
+        android:inputType="textPersonName"/>
+
+    <EditText
+        android:id="@+id/registration_pass_input"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="@string/login_password"
+        android:layout_marginEnd="10dp"
+        android:layout_marginStart="10dp"
+        android:inputType="textPassword"/>
+
+    <EditText
+        android:id="@+id/registration_confirm_input"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="@string/registration_confirm"
+        android:layout_margin="10dp"
+        android:inputType="textPassword"/>
+
+    <Button
+        android:id="@+id/registration_reg_btn"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:text="@string/login_registration_btn"
+        android:textColor="@color/colorText"
+        android:background="@color/colorBackLight"/>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/registration_already"
+        android:gravity="center"
+        android:layout_marginTop="20dp"/>
+
+    <Button
+        android:id="@+id/registration_login_btn"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:text="@string/registration_sign_in"
+        android:textColor="@color/colorText"
+        android:background="@color/colorBackLight"/>
+
+</LinearLayout>

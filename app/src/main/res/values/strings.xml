@@ -1,0 +1,62 @@
+<resources>
+    <string name="app_name">AudioDementia</string>
+    <string name="drawer_menu_group_navigation">Навигация</string>
+    <string name="drawer_menu_group_application">Приложение</string>
+    <string name="navigation_main">Главная</string>
+    <string name="navigation_music">Музыка</string>
+    <string name="navigation_playlists">Плейлисты</string>
+    <string name="navigation_player">Плеер</string>
+    <string name="application_preferences">Настройки</string>
+    <string name="application_exit">Выход</string>
+    <string name="main_header_title">Заголовок</string>
+    <string name="main_layout_genres">Жанры</string>
+    <string name="main_layout_playlists">Плейлисты</string>
+    <string name="music_search">Поиск</string>
+    <string-array name="music_search_options">
+        <item>Песня</item>
+        <item>Альбом</item>
+        <item>Исполнитель</item>
+    </string-array>
+    <string-array name="add_to_playlist">
+        <item>Добавить в плейлист</item>
+    </string-array>
+    <string name="playlists_title">Плейлисты</string>
+    <string name="playlists_add_new">Новый плейлист</string>
+    <string name="playlists_add">Новый плейлист</string>
+    <string name="player_album_cover">Обложка альбома</string>
+    <string name="player_song_title">Название песни</string>
+    <string name="player_album">Альбом</string>
+    <string name="player_artist">Исполнитель</string>
+    <string name="player_time_placeholder">00:00/00:00</string>
+    <string name="song_title_placeholder">Название песни</string>
+    <string name="song_artist_placeholder">Исполнитель</string>
+    <string name="song_time_placeholder">00:00</string>
+    <string name="song_album_placeholder">Альбом</string>
+    <string name="playlist_title">Название плейлиста</string>
+    <string name="playlist_track_num_title">Количество треков:</string>
+    <string name="playlist_track_num">999</string>
+    <string name="login_title">Вход в приожение</string>
+    <string name="login_username">Имя пользователя</string>
+    <string name="login_password">Пароль</string>
+    <string name="login_sign_in_btn">Вход</string>
+    <string name="login_registration_proposal">Не зарегистрированы?</string>
+    <string name="login_registration_btn">Регистрация</string>
+    <string name="registration_title">Регистрация в приложении</string>
+    <string name="registration_confirm">Подтверждение пароля</string>
+    <string name="registration_already">Уже зарегистрированы?</string>
+    <string name="registration_sign_in">Вход</string>
+    <string name="app_logo">Лого</string>
+    <string name="genre_name">Название жанра</string>
+    <string name="genre_cover">Изображение жанра</string>
+    <string name="new_playlist">Название плейлиста</string>
+    <string name="song_recycler_cover">Обложка песни</string>
+    <string name="try_connect_again">Повторить попытку</string>
+    <string name="generic_message">Сообщение</string>
+    <string name="empty_genres">Список жанров пуст</string>
+    <string name="empty_playlists">Список плейлистов пуст</string>
+    <string name="empty_albums">Альбомов не найдено</string>
+    <string name="empty_songs">Песен не найдено</string>
+    <string name="music_start_search">Начните поиск</string>
+    <string name="player_time_current">00:00/</string>
+    <string name="player_time_duration">00:00</string>
+</resources>
