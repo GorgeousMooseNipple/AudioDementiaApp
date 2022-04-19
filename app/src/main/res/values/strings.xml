@@ -1,62 +1,62 @@
 <resources>
     <string name="app_name">AudioDementia</string>
-    <string name="drawer_menu_group_navigation">Навигация</string>
-    <string name="drawer_menu_group_application">Приложение</string>
-    <string name="navigation_main">Главная</string>
-    <string name="navigation_music">Музыка</string>
-    <string name="navigation_playlists">Плейлисты</string>
-    <string name="navigation_player">Плеер</string>
-    <string name="application_preferences">Настройки</string>
-    <string name="application_exit">Выход</string>
-    <string name="main_header_title">Заголовок</string>
-    <string name="main_layout_genres">Жанры</string>
-    <string name="main_layout_playlists">Плейлисты</string>
-    <string name="music_search">Поиск</string>
+    <string name="drawer_menu_group_navigation">Navigation</string>
+    <string name="drawer_menu_group_application">Application</string>
+    <string name="navigation_main">Main page</string>
+    <string name="navigation_music">Music</string>
+    <string name="navigation_playlists">Playlists</string>
+    <string name="navigation_player">Player</string>
+    <string name="application_preferences">Settings</string>
+    <string name="application_exit">Sign out</string>
+    <string name="main_header_title">Title</string>
+    <string name="main_layout_genres">Genres</string>
+    <string name="main_layout_playlists">Playlists</string>
+    <string name="music_search">Search</string>
     <string-array name="music_search_options">
-        <item>Песня</item>
-        <item>Альбом</item>
-        <item>Исполнитель</item>
+        <item>By song title</item>
+        <item>Album</item>
+        <item>By artist name</item>
     </string-array>
     <string-array name="add_to_playlist">
-        <item>Добавить в плейлист</item>
+        <item>Add to playlist</item>
     </string-array>
-    <string name="playlists_title">Плейлисты</string>
-    <string name="playlists_add_new">Новый плейлист</string>
-    <string name="playlists_add">Новый плейлист</string>
-    <string name="player_album_cover">Обложка альбома</string>
-    <string name="player_song_title">Название песни</string>
-    <string name="player_album">Альбом</string>
-    <string name="player_artist">Исполнитель</string>
+    <string name="playlists_title">Playlists</string>
+    <string name="playlists_add_new">New playlist</string>
+    <string name="playlists_add">New playlist</string>
+    <string name="player_album_cover">Album cover</string>
+    <string name="player_song_title">Song title</string>
+    <string name="player_album">Album</string>
+    <string name="player_artist">Artist</string>
     <string name="player_time_placeholder">00:00/00:00</string>
-    <string name="song_title_placeholder">Название песни</string>
-    <string name="song_artist_placeholder">Исполнитель</string>
+    <string name="song_title_placeholder">Song title</string>
+    <string name="song_artist_placeholder">Artist</string>
     <string name="song_time_placeholder">00:00</string>
-    <string name="song_album_placeholder">Альбом</string>
-    <string name="playlist_title">Название плейлиста</string>
-    <string name="playlist_track_num_title">Количество треков:</string>
+    <string name="song_album_placeholder">Album</string>
+    <string name="playlist_title">Playlist title</string>
+    <string name="playlist_track_num_title">Track count:</string>
     <string name="playlist_track_num">999</string>
-    <string name="login_title">Вход в приожение</string>
-    <string name="login_username">Имя пользователя</string>
-    <string name="login_password">Пароль</string>
-    <string name="login_sign_in_btn">Вход</string>
-    <string name="login_registration_proposal">Не зарегистрированы?</string>
-    <string name="login_registration_btn">Регистрация</string>
-    <string name="registration_title">Регистрация в приложении</string>
-    <string name="registration_confirm">Подтверждение пароля</string>
-    <string name="registration_already">Уже зарегистрированы?</string>
-    <string name="registration_sign_in">Вход</string>
-    <string name="app_logo">Лого</string>
-    <string name="genre_name">Название жанра</string>
-    <string name="genre_cover">Изображение жанра</string>
-    <string name="new_playlist">Название плейлиста</string>
-    <string name="song_recycler_cover">Обложка песни</string>
-    <string name="try_connect_again">Повторить попытку</string>
-    <string name="generic_message">Сообщение</string>
-    <string name="empty_genres">Список жанров пуст</string>
-    <string name="empty_playlists">Список плейлистов пуст</string>
-    <string name="empty_albums">Альбомов не найдено</string>
-    <string name="empty_songs">Песен не найдено</string>
-    <string name="music_start_search">Начните поиск</string>
+    <string name="login_title">Log in</string>
+    <string name="login_username">Username</string>
+    <string name="login_password">Password</string>
+    <string name="login_sign_in_btn">Sign in</string>
+    <string name="login_registration_proposal">Not registered?</string>
+    <string name="login_registration_btn">Register</string>
+    <string name="registration_title">Register</string>
+    <string name="registration_confirm">Confirm password</string>
+    <string name="registration_already">Already registered?</string>
+    <string name="registration_sign_in">Sign in</string>
+    <string name="app_logo">Logo</string>
+    <string name="genre_name">Genre name</string>
+    <string name="genre_cover">Genre cover</string>
+    <string name="new_playlist">Playlist name</string>
+    <string name="song_recycler_cover">Song cover</string>
+    <string name="try_connect_again">Try again</string>
+    <string name="generic_message">Message</string>
+    <string name="empty_genres">List of genres is empty</string>
+    <string name="empty_playlists">List of playlists is empty</string>
+    <string name="empty_albums">No albums found</string>
+    <string name="empty_songs">No songs found</string>
+    <string name="music_start_search">Start searching</string>
     <string name="player_time_current">00:00/</string>
     <string name="player_time_duration">00:00</string>
 </resources>

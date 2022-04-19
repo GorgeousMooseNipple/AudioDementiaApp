@@ -94,7 +94,7 @@ public class SongListFragment extends Fragment {
             }
         }
         catch (NullPointerException ex) {
-            emptyMessage.setText("Ошибка создания страницы");
+            emptyMessage.setText("Error while creating page");
             switchRecyclerView(false);
         }
     }
