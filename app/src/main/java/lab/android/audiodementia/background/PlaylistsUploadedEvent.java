@@ -9,6 +9,6 @@ public class PlaylistsUploadedEvent extends ResponseEvent<ArrayList<Playlist>>{
                                   ArrayList<Playlist> playlists) {
         this.successful = successfull;
         this.message = message;
-        this.entity = playlists;
+        this.data = playlists;
     }
 }
