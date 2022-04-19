@@ -92,8 +92,11 @@ public class PlaylistsFragment extends Fragment {
 
     public void onPlaylistsLoaded(HttpResponseWithData<List<Playlist>> event) {
         if (event.isSuccess()) {
-            this.playlistList = (ArrayList<Playlist>) event.getData();
-            setDataToPlaylistsRecycler();
+            ArrayList<Playlist> playlists = (ArrayList<Playlist>) event.getData();
+            if(playlists.size() > 0) {
+                this.playlistList = playlists;
+                setDataToPlaylistsRecycler();
+            }
         }
         else {
             AlertDialogGenerator.MakeAlertDialog(getActivity(), "Error while loading playlists", event.getMessage());

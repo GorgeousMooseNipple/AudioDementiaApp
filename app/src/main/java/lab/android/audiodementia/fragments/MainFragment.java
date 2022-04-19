@@ -1,6 +1,7 @@
 package lab.android.audiodementia.fragments;
 
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
@@ -39,12 +40,14 @@ public class MainFragment extends Fragment {
     private ViewSwitcher genresSwitcher;
     private ViewSwitcher playlistsSwitcher;
     private BackgroundHttpExecutor backgroundHttpExecutor;
+    private Handler handler;
 
     @Override
     public void onCreate(Bundle savedInstance) {
         super.onCreate(savedInstance);
         session = new UserSession(getActivity());
-        backgroundHttpExecutor = new BackgroundHttpExecutor();
+        handler = new Handler();
+        backgroundHttpExecutor = new BackgroundHttpExecutor(handler);
     }
 
     @Override
@@ -89,8 +92,11 @@ public class MainFragment extends Fragment {
 
     public void onGenresLoaded(HttpResponseWithData<List<Genre>> event) {
         if (event.isSuccess()) {
-            this.genreList = (ArrayList<Genre>) event.getData();
-            setDataToGenresRecycler();
+            ArrayList<Genre> genres = (ArrayList<Genre>) event.getData();
+            if(genres.size() > 0) {
+                this.genreList = genres;
+                setDataToGenresRecycler(this.genreList);
+            }
         }
         else {
             AlertDialogGenerator.MakeAlertDialog(getActivity(), "Error while loading genres", event.getMessage());
@@ -99,8 +105,11 @@ public class MainFragment extends Fragment {
 
     public void onPlaylistsLoaded(HttpResponseWithData<List<Playlist>> event) {
         if (event.isSuccess()) {
-            this.playlistList = (ArrayList<Playlist>) event.getData();
-            setDataToPlaylistsRecycler();
+            ArrayList<Playlist> playlists = (ArrayList<Playlist>) event.getData();
+            if(playlists.size() > 0) {
+                this.playlistList = playlists;
+                setDataToPlaylistsRecycler(this.playlistList);
+            }
         }
         else {
             AlertDialogGenerator.MakeAlertDialog(getActivity(), "Error while loading playlists", event.getMessage());
@@ -129,13 +138,13 @@ public class MainFragment extends Fragment {
         }
     }
 
-    private void setDataToGenresRecycler() {
+    private void setDataToGenresRecycler(ArrayList<Genre> genres) {
         if (genreList.size() != 0)
             switchGenresView(true);
         else
             switchGenresView(false);
         genresRecycler.setLayoutManager(new LinearLayoutManager(getActivity()));
-        RecyclerViewGenreAdapter genresAdapter = new RecyclerViewGenreAdapter(genreList);
+        RecyclerViewGenreAdapter genresAdapter = new RecyclerViewGenreAdapter(genres);
         genresAdapter.setListener(new OnRecyclerItemClickListener() {
             @Override
             public void onItemClick(Object obj) {
@@ -151,13 +160,13 @@ public class MainFragment extends Fragment {
         genresRecycler.setAdapter(genresAdapter);
     }
 
-    private void setDataToPlaylistsRecycler() {
+    private void setDataToPlaylistsRecycler(ArrayList<Playlist> playlists) {
         if (playlistList.size() != 0)
             switchPlaylistsView(true);
         else
             switchPlaylistsView(false);
         playlistsRecycler.setLayoutManager(new LinearLayoutManager(getActivity()));
-        RecyclerViewPlaylistAdapter playlistsAdapter = new RecyclerViewPlaylistAdapter(playlistList);
+        RecyclerViewPlaylistAdapter playlistsAdapter = new RecyclerViewPlaylistAdapter(playlists);
         playlistsAdapter.setClickListener(new OnRecyclerItemClickListener() {
             @Override
             public void onItemClick(Object obj) {

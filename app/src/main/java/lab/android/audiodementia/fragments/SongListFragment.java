@@ -154,7 +154,10 @@ public class SongListFragment extends Fragment {
         if (progressBar.getVisibility() == View.VISIBLE)
             progressBar.setVisibility(View.GONE);
         if (event.isSuccess()) {
-            recyclerLoadData((ArrayList<Song>) event.getData());
+            ArrayList<Song> songs = (ArrayList<Song>) event.getData();
+            if(songs.size() > 0) {
+                recyclerLoadData((ArrayList<Song>) event.getData());
+            }
         }
         else {
             AlertDialogGenerator.MakeAlertDialog(getActivity(), "Songs loading error", event.getMessage());

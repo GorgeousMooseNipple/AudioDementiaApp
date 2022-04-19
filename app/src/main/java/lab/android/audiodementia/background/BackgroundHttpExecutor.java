@@ -16,6 +16,11 @@ public class BackgroundHttpExecutor {
         this.background = Background.getInstance();
     }
 
+    public BackgroundHttpExecutor(Handler handler) {
+        this.handler = handler;
+        this.background = Background.getInstance();
+    }
+
     public void execute(Provider<HttpResponse> provider, Consumer<HttpResponse> consumer) {
         WeakReference<Consumer<HttpResponse>> consumerRef = new WeakReference<>(consumer);
         this.background.execute(() -> {

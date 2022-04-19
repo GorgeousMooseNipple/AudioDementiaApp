@@ -186,7 +186,10 @@ public class MusicFragment extends Fragment
         if (loadMoreProgress.getVisibility() == View.VISIBLE)
             loadMoreProgress.setVisibility(View.GONE);
         if (event.isSuccess()) {
-            setRecyclerDataSong((ArrayList<Song>) event.getData());
+            ArrayList<Song> songs = (ArrayList<Song>) event.getData();
+            if(songs.size() > 0) {
+                setRecyclerDataSong(songs);
+            }
         }
         else {
             AlertDialogGenerator.MakeAlertDialog(getActivity(), "Loading songs error", event.getMessage());
@@ -204,7 +207,10 @@ public class MusicFragment extends Fragment
         if (loadMoreProgress.getVisibility() == View.VISIBLE)
             loadMoreProgress.setVisibility(View.GONE);
         if (event.isSuccess()) {
-            setRecyclerDataAlbum((ArrayList<Album>) event.getData());
+            ArrayList<Album> albums = (ArrayList<Album>) event.getData();
+            if(albums.size() > 0){
+                setRecyclerDataAlbum(albums);
+            }
         }
         else {
             AlertDialogGenerator.MakeAlertDialog(getActivity(), "Loading albums error", event.getMessage());
