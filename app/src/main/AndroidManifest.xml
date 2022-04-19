@@ -31,8 +31,6 @@
             android:screenOrientation="portrait"/>
         <activity android:name=".activities.BaseActivity"
             android:screenOrientation="portrait"/>
-        <activity android:name=".activities.TestActivity"
-            android:screenOrientation="portrait"/>
 
         <service android:name=".service.MusicPlayerService" android:enabled="true" android:exported="false">
                 <intent-filter>

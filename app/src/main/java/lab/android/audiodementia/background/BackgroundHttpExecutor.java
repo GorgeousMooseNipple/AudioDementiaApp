@@ -2,17 +2,16 @@ package lab.android.audiodementia.background;
 
 import android.os.Handler;
 import java.lang.ref.WeakReference;
-import java.util.Map;
 
 import lab.android.audiodementia.client.HttpResponse;
 import lab.android.audiodementia.client.HttpResponseWithData;
 
-public class HttpHandler {
+public class BackgroundHttpExecutor {
 
     private Handler handler;
     private Background background;
 
-    public HttpHandler() {
+    public BackgroundHttpExecutor() {
         this.handler = new Handler();
         this.background = Background.getInstance();
     }

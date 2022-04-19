@@ -2,19 +2,14 @@ package lab.android.audiodementia.activities;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 
-import org.greenrobot.eventbus.Subscribe;
-import org.greenrobot.eventbus.ThreadMode;
-
 import lab.android.audiodementia.R;
 import lab.android.audiodementia.background.Background;
-import lab.android.audiodementia.background.HttpHandler;
-import lab.android.audiodementia.background.UserRegisterEvent;
+import lab.android.audiodementia.background.BackgroundHttpExecutor;
 import lab.android.audiodementia.client.HttpResponse;
 import lab.android.audiodementia.client.PasswordHash;
 import lab.android.audiodementia.client.RestClient;
@@ -30,7 +25,7 @@ public class RegistrationActivity extends AppCompatActivity {
     private EditText passInput;
     private EditText confirmInput;
     private Background background;
-    private HttpHandler httpHandler;
+    private BackgroundHttpExecutor backgroundHttpExecutor;
 
     @Override
     protected void onCreate(Bundle savedInstance) {
@@ -39,7 +34,7 @@ public class RegistrationActivity extends AppCompatActivity {
         setContentView(R.layout.activity_registration);
 
         session = new UserSession(this);
-        httpHandler = new HttpHandler();
+        backgroundHttpExecutor = new BackgroundHttpExecutor();
 
         usernameInput = findViewById(R.id.registration_login_input);
         passInput = findViewById(R.id.registration_pass_input);
@@ -74,13 +69,11 @@ public class RegistrationActivity extends AppCompatActivity {
     @Override
     protected void onStart() {
         super.onStart();
-        background.register(this);
     }
 
     @Override
     protected void onStop() {
         super.onStop();
-        background.unregister(this);
     }
 
     private boolean checkInput(String username, String pass, String confirm) {
@@ -122,7 +115,7 @@ public class RegistrationActivity extends AppCompatActivity {
         Map<String, String> params = new HashMap<>();
         params.put("login", username);
         params.put("pass", pass);
-        this.httpHandler.execute(RestClient::register, params, this::onRegister);
+        this.backgroundHttpExecutor.execute(RestClient::register, params, this::onRegister);
     }
 
     public void onRegister(HttpResponse event){
@@ -133,15 +126,4 @@ public class RegistrationActivity extends AppCompatActivity {
             AlertDialogGenerator.MakeAlertDialog(this, "Registration error", event.getMessage());
         }
     }
-
-    @Subscribe(threadMode = ThreadMode.MAIN)
-    public void onEvent(UserRegisterEvent event){
-        if (event.isSuccess()) {
-            loadLogin();
-        }
-        else {
-            AlertDialogGenerator.MakeAlertDialog(this, "Registration error", event.getMessage());
-        }
-    }
-
 }

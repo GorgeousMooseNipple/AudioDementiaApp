@@ -2,37 +2,23 @@ package lab.android.audiodementia.activities;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
-import android.opengl.Visibility;
 import android.os.Bundle;
 import android.os.Handler;
-import android.os.Message;
-import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
-import java.util.HashMap;
-
 import lab.android.audiodementia.R;
 import lab.android.audiodementia.background.Background;
 import lab.android.audiodementia.background.ConnectionCheckEvent;
-import lab.android.audiodementia.background.Function;
-import lab.android.audiodementia.background.HttpHandler;
-import lab.android.audiodementia.background.Provider;
-import lab.android.audiodementia.background.ResponseEvent;
+import lab.android.audiodementia.background.BackgroundHttpExecutor;
 import lab.android.audiodementia.client.CacheManager;
-import lab.android.audiodementia.client.HttpResponse;
 import lab.android.audiodementia.client.RestClient;
-import lab.android.audiodementia.model.Genre;
-import lab.android.audiodementia.model.Playlist;
 import lab.android.audiodementia.user.UserSession;
 
 public class StartUpActivity extends AppCompatActivity{
@@ -42,7 +28,7 @@ public class StartUpActivity extends AppCompatActivity{
     private TextView message;
     private Button tryAgainButton;
     private Handler handler;
-    private HttpHandler httpHandler;
+    private BackgroundHttpExecutor backgroundHttpExecutor;
     private int counter;
     private UserSession session;
 
@@ -65,7 +51,7 @@ public class StartUpActivity extends AppCompatActivity{
 
         handler = new Handler();
 
-        httpHandler = new HttpHandler();
+        backgroundHttpExecutor = new BackgroundHttpExecutor();
     }
 
     @Override

@@ -24,9 +24,8 @@ import lab.android.audiodementia.activities.BaseActivity;
 import lab.android.audiodementia.adapters.OnRecyclerItemClickListener;
 import lab.android.audiodementia.adapters.RecyclerViewPlaylistAdapter;
 import lab.android.audiodementia.background.Background;
-import lab.android.audiodementia.background.HttpHandler;
+import lab.android.audiodementia.background.BackgroundHttpExecutor;
 import lab.android.audiodementia.background.NewPlaylistAddedEvent;
-import lab.android.audiodementia.background.PlaylistsUploadedEvent;
 import lab.android.audiodementia.client.HttpResponseWithData;
 import lab.android.audiodementia.client.RestClient;
 import lab.android.audiodementia.model.Playlist;
@@ -43,13 +42,13 @@ public class PlaylistsFragment extends Fragment {
     private ImageButton addNewPlaylist;
     private ViewSwitcher switcher;
     private ArrayList<Playlist> playlistList;
-    private HttpHandler httpHandler;
+    private BackgroundHttpExecutor backgroundHttpExecutor;
 
     @Override
     public void onCreate(Bundle savedInstance) {
         super.onCreate(savedInstance);
         session = new UserSession(getActivity());
-        httpHandler = new HttpHandler();
+        backgroundHttpExecutor = new BackgroundHttpExecutor();
     }
 
     @Override
@@ -88,7 +87,7 @@ public class PlaylistsFragment extends Fragment {
         Map<String, String> params = new HashMap<>();
         params.put("user_id", String.valueOf(session.getId()));
         params.put("token", session.getToken());
-        httpHandler.executeWithReturn(RestClient::getUserPlaylists, params, this::onPlaylistsLoaded);
+        backgroundHttpExecutor.executeWithReturn(RestClient::getUserPlaylists, params, this::onPlaylistsLoaded);
     }
 
     public void onPlaylistsLoaded(HttpResponseWithData<List<Playlist>> event) {
@@ -109,17 +108,6 @@ public class PlaylistsFragment extends Fragment {
         else {
             if (switcher.getCurrentView().getId() == R.id.playlists_recycler)
                 switcher.showNext();
-        }
-    }
-
-    @Subscribe(threadMode = ThreadMode.MAIN)
-    public void onEvent(PlaylistsUploadedEvent event) {
-        if (event.isSuccessful()) {
-            this.playlistList = event.getEntity();
-            setDataToPlaylistsRecycler();
-        }
-        else {
-            AlertDialogGenerator.MakeAlertDialog(getActivity(), "Error while loading playlists", event.getMessage());
         }
     }
 

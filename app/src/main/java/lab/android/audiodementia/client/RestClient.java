@@ -1,6 +1,5 @@
 package lab.android.audiodementia.client;
 
-// import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
@@ -52,7 +51,6 @@ public class RestClient {
             }
             // Delete trailing &
             sb.deleteCharAt(sb.length() - 1);
-//            String urlString = URLEncoder.encode(sb.toString(), "UTF-8");
             return new URL(base + sb.toString());
         } else {
             return new URL(base);
@@ -147,7 +145,7 @@ public class RestClient {
 
             connection.setRequestMethod("GET");
             connection.setRequestProperty("Accept", "application/json");
-            return getRequestInner(connection, params, useCache);
+            return getRequestInner(connection, useCache);
         }
         catch (Exception ex) {
             JSONObject response = new JSONObject();
@@ -173,7 +171,7 @@ public class RestClient {
             for(Map.Entry<String, String> h : headers.entrySet()) {
                 connection.setRequestProperty(h.getKey(), h.getValue());
             }
-            return getRequestInner(connection, params, useCache);
+            return getRequestInner(connection, useCache);
         }
         catch (Exception ex) {
             JSONObject response = new JSONObject();
@@ -184,7 +182,7 @@ public class RestClient {
     }
 
     private static JSONObject getRequestInner(
-            HttpURLConnection connection, Map<String, String> params, boolean useCache
+            HttpURLConnection connection, boolean useCache
     ) throws JSONException {
         try {
 
@@ -224,8 +222,6 @@ public class RestClient {
 
     public static UserSignInEvent signIn(String username, String pass) {
         Map<String, String> params = new HashMap<String, String>();
-//        params.put("login", username);
-//        params.put("pass", pass);
         try {
             String url = "/auth/token";
             Map<String, String> headers = new HashMap<String, String>();
@@ -268,10 +264,6 @@ public class RestClient {
     }
 
     public static HttpResponse register(Map<String, String> params) {
-//        Map<String, String> params = new HashMap<String, String>();
-//        params.put("login", username);
-//        params.put("pass", pass);
-
         try {
             URL url = new URL(BASE_URL + "/auth/register");
             JSONObject response = requestWithData("POST", url, params);
@@ -294,7 +286,6 @@ public class RestClient {
             String message = response.getString("message");
 
             if (response.getInt("status_code") == HttpURLConnection.HTTP_OK) {
-                // JsonArray genresList = response.get("genres_list").getAsJsonArray();
                 String ar = response.getString("genres");
                 JsonArray genresList = new JsonParser().parse(ar).getAsJsonArray();
 
@@ -318,8 +309,6 @@ public class RestClient {
     }
 
     public static HttpResponseWithData<List<Playlist>> getUserPlaylists(Map<String, String> params) {
-//        Map<String, String> params = new HashMap<String, String>();
-//        params.put("user_id", String.valueOf(userId));
         try {
             String token = params.remove("token");
             Map<String, String> headers = new HashMap<>();
@@ -409,8 +398,6 @@ public class RestClient {
             try {
                 String message = response.getString("message");
                 if (response.getInt("status_code") == HttpURLConnection.HTTP_OK) {
-//                    String jStr = response.getString("playlist");
-//                    JsonObject jPlaylist = new JsonParser().parse(jStr).getAsJsonObject();
                     long id = response.getLong("id");
                     String title = response.getString("title");
                     long trackCount = response.getLong("song_count");
@@ -493,27 +480,27 @@ public class RestClient {
         }
     }
 
-    public static HttpResponseWithData getGenreSongs(Map<String, String> params) {
+    public static HttpResponseWithData<List<Song>> getGenreSongs(Map<String, String> params) {
         String url = "/media/songs/genre";
         return getSongs(url, params);
     }
 
-    public static HttpResponseWithData getSongsByTitle(Map<String, String> params) {
+    public static HttpResponseWithData<List<Song>> getSongsByTitle(Map<String, String> params) {
         String url = "/media/songs/search";
         return getSongs(url, params);
     }
 
-    public static HttpResponseWithData getSongsByArtist(Map<String, String> params) {
+    public static HttpResponseWithData<List<Song>> getSongsByArtist(Map<String, String> params) {
         String url = "/media/songs/artist";
         return getSongs(url, params);
     }
 
-    public static HttpResponseWithData getAlbumSongs(Map<String, String> params) {
+    public static HttpResponseWithData<List<Song>> getAlbumSongs(Map<String, String> params) {
         String url = "/media/songs/album";
         return getSongs(url, params);
     }
 
-    public static HttpResponseWithData getPlaylistSongs(Map<String, String> params) {
+    public static HttpResponseWithData<List<Song>> getPlaylistSongs(Map<String, String> params) {
         String url = "/media/songs/playlist";
         return getSongs(url, params);
     }

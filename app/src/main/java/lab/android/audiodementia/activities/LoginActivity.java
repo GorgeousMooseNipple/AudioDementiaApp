@@ -12,7 +12,6 @@ import org.greenrobot.eventbus.ThreadMode;
 
 import lab.android.audiodementia.R;
 import lab.android.audiodementia.background.Background;
-import lab.android.audiodementia.background.HttpHandler;
 import lab.android.audiodementia.background.UserSignInEvent;
 import lab.android.audiodementia.client.PasswordHash;
 import lab.android.audiodementia.client.RestClient;

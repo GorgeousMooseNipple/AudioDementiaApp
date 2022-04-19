@@ -39,7 +39,7 @@ import lab.android.audiodementia.activities.BaseActivity;
 import lab.android.audiodementia.adapters.OnRecyclerItemClickListener;
 import lab.android.audiodementia.adapters.RecyclerViewPlaylistAdapter;
 import lab.android.audiodementia.background.Background;
-import lab.android.audiodementia.background.HttpHandler;
+import lab.android.audiodementia.background.BackgroundHttpExecutor;
 import lab.android.audiodementia.background.NewPlaylistAddedEvent;
 import lab.android.audiodementia.background.PlaylistsUploadedEvent;
 import lab.android.audiodementia.client.HttpResponseWithData;
@@ -74,7 +74,7 @@ public class PlayerFragment extends Fragment {
     private Handler seekBarHandler;
     private boolean updating;
     private MusicPlayerService service;
-    private HttpHandler httpHandler;
+    private BackgroundHttpExecutor backgroundHttpExecutor;
 
     @Override
     public void onCreate(Bundle savedInstance) {
@@ -297,7 +297,7 @@ public class PlayerFragment extends Fragment {
         Map<String, String> params = new HashMap<>();
         params.put("user_id", String.valueOf(session.getId()));
         params.put("token", session.getToken());
-        httpHandler.executeWithReturn(RestClient::getUserPlaylists, params, this::onPlaylistsLoaded);
+        backgroundHttpExecutor.executeWithReturn(RestClient::getUserPlaylists, params, this::onPlaylistsLoaded);
     }
 
     public void onPlaylistsLoaded(HttpResponseWithData<List<Playlist>> event) {

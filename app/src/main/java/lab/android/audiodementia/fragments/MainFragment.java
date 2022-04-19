@@ -10,9 +10,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ViewSwitcher;
 
-import org.greenrobot.eventbus.Subscribe;
-import org.greenrobot.eventbus.ThreadMode;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -23,11 +20,7 @@ import lab.android.audiodementia.activities.BaseActivity;
 import lab.android.audiodementia.adapters.OnRecyclerItemClickListener;
 import lab.android.audiodementia.adapters.RecyclerViewGenreAdapter;
 import lab.android.audiodementia.adapters.RecyclerViewPlaylistAdapter;
-import lab.android.audiodementia.background.Background;
-import lab.android.audiodementia.background.GenresUploadedEvent;
-import lab.android.audiodementia.background.HttpHandler;
-import lab.android.audiodementia.background.PlaylistsUploadedEvent;
-import lab.android.audiodementia.client.HttpResponse;
+import lab.android.audiodementia.background.BackgroundHttpExecutor;
 import lab.android.audiodementia.client.HttpResponseWithData;
 import lab.android.audiodementia.client.RestClient;
 import lab.android.audiodementia.model.Genre;
@@ -40,31 +33,28 @@ public class MainFragment extends Fragment {
 
     private RecyclerView genresRecycler;
     private RecyclerView playlistsRecycler;
-    private Background background = Background.getInstance();
     private UserSession session;
     private ArrayList<Genre> genreList;
     private ArrayList<Playlist> playlistList;
     private ViewSwitcher genresSwitcher;
     private ViewSwitcher playlistsSwitcher;
-    private HttpHandler httpHandler;
+    private BackgroundHttpExecutor backgroundHttpExecutor;
 
     @Override
     public void onCreate(Bundle savedInstance) {
         super.onCreate(savedInstance);
         session = new UserSession(getActivity());
-        httpHandler = new HttpHandler();
+        backgroundHttpExecutor = new BackgroundHttpExecutor();
     }
 
     @Override
     public void onResume() {
         super.onResume();
-//        background.register(this);
     }
 
     @Override
     public void onPause() {
         super.onPause();
-//        background.unregister(this);
     }
 
     @Override
@@ -87,14 +77,14 @@ public class MainFragment extends Fragment {
     }
 
     private void loadGenres() {
-        httpHandler.executeWithReturn(RestClient::getGenres, this::onGenresLoaded);
+        backgroundHttpExecutor.executeWithReturn(RestClient::getGenres, this::onGenresLoaded);
     }
 
     private void loadPlaylists() {
         Map<String, String> params = new HashMap<>();
         params.put("user_id", String.valueOf(session.getId()));
         params.put("token", session.getToken());
-        httpHandler.executeWithReturn(RestClient::getUserPlaylists, params, this::onPlaylistsLoaded);
+        backgroundHttpExecutor.executeWithReturn(RestClient::getUserPlaylists, params, this::onPlaylistsLoaded);
     }
 
     public void onGenresLoaded(HttpResponseWithData<List<Genre>> event) {
@@ -116,28 +106,6 @@ public class MainFragment extends Fragment {
             AlertDialogGenerator.MakeAlertDialog(getActivity(), "Error while loading playlists", event.getMessage());
         }
     }
-//
-//    @Subscribe(threadMode = ThreadMode.MAIN)
-//    public void onEvent(GenresUploadedEvent event) {
-//        if (event.isSuccessful()) {
-//            this.genreList = event.getEntity();
-//            setDataToGenresRecycler();
-//        }
-//        else {
-//            AlertDialogGenerator.MakeAlertDialog(getActivity(), "Error while loading", event.getMessage());
-//        }
-//    }
-//
-//    @Subscribe(threadMode = ThreadMode.MAIN)
-//    public void onEvent(PlaylistsUploadedEvent event) {
-//        if (event.isSuccessful()) {
-//            this.playlistList = event.getEntity();
-//            setDataToPlaylistsRecycler();
-//        }
-//        else {
-//            AlertDialogGenerator.MakeAlertDialog(getActivity(), "Error while loading", event.getMessage());
-//        }
-//    }
 
     private void switchGenresView(boolean show) {
         if (show) {

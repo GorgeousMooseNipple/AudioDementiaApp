@@ -17,9 +17,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ViewSwitcher;
 
-import org.greenrobot.eventbus.Subscribe;
-import org.greenrobot.eventbus.ThreadMode;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -31,10 +28,8 @@ import lab.android.audiodementia.adapters.BottomReachedListener;
 import lab.android.audiodementia.adapters.OnRecyclerItemClickListener;
 import lab.android.audiodementia.adapters.RecyclerViewAlbumAdapter;
 import lab.android.audiodementia.adapters.RecyclerViewSongAdapter;
-import lab.android.audiodementia.background.AlbumsByTitleLoadedEvent;
 import lab.android.audiodementia.background.Background;
-import lab.android.audiodementia.background.HttpHandler;
-import lab.android.audiodementia.background.SongsLoadedEvent;
+import lab.android.audiodementia.background.BackgroundHttpExecutor;
 import lab.android.audiodementia.background.SubmitSongEvent;
 import lab.android.audiodementia.background.SubmitSongListEvent;
 import lab.android.audiodementia.client.HttpResponseWithData;
@@ -64,7 +59,7 @@ public class MusicFragment extends Fragment
     private String lastQuery;
     private boolean needMore;
     private boolean listUpdated;
-    private HttpHandler httpHandler;
+    private BackgroundHttpExecutor backgroundHttpExecutor;
 
     @Override
     public void onCreate(Bundle savedInstance) {
@@ -73,7 +68,7 @@ public class MusicFragment extends Fragment
         lastAlbumId = 0;
         needMore = true;
         listUpdated = false;
-        httpHandler = new HttpHandler();
+        backgroundHttpExecutor = new BackgroundHttpExecutor();
     }
 
     @Override
@@ -108,7 +103,6 @@ public class MusicFragment extends Fragment
     @Override
     public void onResume() {
         super.onResume();
-        background.register(this);
         if (loadedData != null && loadedData == RequiredData.LOAD_SONGS)
             if (songList != null && songList.size() != 0)
                 switchRecyclerView(true);
@@ -123,7 +117,6 @@ public class MusicFragment extends Fragment
     @Override
     public void onPause() {
         super.onPause();
-        background.unregister(this);
     }
 
     @Override
@@ -186,7 +179,7 @@ public class MusicFragment extends Fragment
         Map<String, String> params = new HashMap<String, String>();
         params.put("title", title);
         params.put("last_id", String.valueOf(lastSongId));
-        httpHandler.executeWithReturn(RestClient::getSongsByTitle, params, this::onSongsLoaded);
+        backgroundHttpExecutor.executeWithReturn(RestClient::getSongsByTitle, params, this::onSongsLoaded);
     }
 
     public void onSongsLoaded(HttpResponseWithData<List<Song>> event) {
@@ -204,7 +197,7 @@ public class MusicFragment extends Fragment
         Map<String, String> params = new HashMap<String, String>();
         params.put("title", title);
         params.put("last_id", String.valueOf(lastAlbumId));
-        httpHandler.executeWithReturn(RestClient::getAlbumsByTitle, params, this::onAlbumsLoaded);
+        backgroundHttpExecutor.executeWithReturn(RestClient::getAlbumsByTitle, params, this::onAlbumsLoaded);
     }
 
     public void onAlbumsLoaded(HttpResponseWithData<List<Album>> event) {
@@ -222,31 +215,7 @@ public class MusicFragment extends Fragment
         Map<String, String> params = new HashMap<String, String>();
         params.put("title", title);
         params.put("last_id", String.valueOf(lastSongId));
-        httpHandler.executeWithReturn(RestClient::getSongsByArtist, params, this::onSongsLoaded);
-    }
-
-    @Subscribe(threadMode = ThreadMode.MAIN)
-    public void onEvent(SongsLoadedEvent event) {
-        if (loadMoreProgress.getVisibility() == View.VISIBLE)
-            loadMoreProgress.setVisibility(View.GONE);
-        if (event.isSuccess()) {
-            setRecyclerDataSong(event.getSongList());
-        }
-        else {
-            AlertDialogGenerator.MakeAlertDialog(getActivity(), "Loading songs error", event.getMessage());
-        }
-    }
-
-    @Subscribe(threadMode = ThreadMode.MAIN)
-    public void onEvent(AlbumsByTitleLoadedEvent event) {
-        if (loadMoreProgress.getVisibility() == View.VISIBLE)
-            loadMoreProgress.setVisibility(View.GONE);
-        if (event.isSuccess()) {
-            setRecyclerDataAlbum(event.getAlbumList());
-        }
-        else {
-            AlertDialogGenerator.MakeAlertDialog(getActivity(), "Loading albums error", event.getMessage());
-        }
+        backgroundHttpExecutor.executeWithReturn(RestClient::getSongsByArtist, params, this::onSongsLoaded);
     }
 
     private void setRecyclerDataSong(ArrayList<Song> newSongs) {

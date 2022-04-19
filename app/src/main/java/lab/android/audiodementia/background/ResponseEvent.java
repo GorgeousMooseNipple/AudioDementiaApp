@@ -1,14 +1,11 @@
 package lab.android.audiodementia.background;
 
-import java.util.ArrayList;
 
-import lab.android.audiodementia.model.Song;
-
-public class ResponseEvent<Entity> {
+public class ResponseEvent<Data> {
 
     boolean successful;
     String message;
-    Entity entity;
+    Data data;
 
     public boolean isSuccessful() {
         return  successful;
@@ -18,7 +15,7 @@ public class ResponseEvent<Entity> {
         return message;
     }
 
-    public Entity getEntity() {
-        return entity;
+    public Data getEntity() {
+        return data;
     }
 }

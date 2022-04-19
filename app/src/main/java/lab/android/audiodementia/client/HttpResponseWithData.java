@@ -1,15 +1,15 @@
 package lab.android.audiodementia.client;
 
-public class HttpResponseWithData<Entity> extends HttpResponse {
+public class HttpResponseWithData<Data> extends HttpResponse {
 
-    private Entity data;
+    private Data data;
 
-    HttpResponseWithData(boolean successful, String message, Entity data) {
+    HttpResponseWithData(boolean successful, String message, Data data) {
         super(successful, message);
         this.data = data;
     }
 
-    public Entity getData() {
+    public Data getData() {
         return this.data;
     }
 }

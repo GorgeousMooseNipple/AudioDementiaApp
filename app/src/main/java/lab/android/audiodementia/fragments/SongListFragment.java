@@ -12,9 +12,6 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.ViewSwitcher;
 
-import org.greenrobot.eventbus.Subscribe;
-import org.greenrobot.eventbus.ThreadMode;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -25,8 +22,7 @@ import lab.android.audiodementia.adapters.BottomReachedListener;
 import lab.android.audiodementia.adapters.OnRecyclerItemClickListener;
 import lab.android.audiodementia.adapters.RecyclerViewSongAdapter;
 import lab.android.audiodementia.background.Background;
-import lab.android.audiodementia.background.HttpHandler;
-import lab.android.audiodementia.background.SongsLoadedEvent;
+import lab.android.audiodementia.background.BackgroundHttpExecutor;
 import lab.android.audiodementia.background.SubmitSongEvent;
 import lab.android.audiodementia.background.SubmitSongListEvent;
 import lab.android.audiodementia.client.HttpResponseWithData;
@@ -49,7 +45,7 @@ public class SongListFragment extends Fragment {
     private boolean needMore;
     private boolean listUpdated;
     private RecyclerViewSongAdapter songAdapter;
-    private HttpHandler httpHandler;
+    private BackgroundHttpExecutor backgroundHttpExecutor;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -60,7 +56,7 @@ public class SongListFragment extends Fragment {
         songList = new ArrayList<>();
         songAdapter = new RecyclerViewSongAdapter(songList);
         needMore = true;
-        httpHandler = new HttpHandler();
+        backgroundHttpExecutor = new BackgroundHttpExecutor();
     }
 
     @Nullable
@@ -106,13 +102,11 @@ public class SongListFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-        background.register(this);
     }
 
     @Override
     public void onPause() {
         super.onPause();
-        background.unregister(this);
     }
 
     private void loadMore(String dataType, long entityId) {
@@ -135,7 +129,7 @@ public class SongListFragment extends Fragment {
     private void loadAlbumSongs(final long albumId) {
         Map<String, String> params = new HashMap<String, String>();
         params.put("id", String.valueOf(albumId));
-        httpHandler.executeWithReturn(RestClient::getAlbumSongs, params, this::onSongsLoaded);
+        backgroundHttpExecutor.executeWithReturn(RestClient::getAlbumSongs, params, this::onSongsLoaded);
     }
 
     private void loadPlaylistSongs(final long playlistId, final long lastId) {
@@ -144,7 +138,7 @@ public class SongListFragment extends Fragment {
         Map<String, String> params = new HashMap<String, String>();
         params.put("id", String.valueOf(playlistId));
         params.put("last_id", String.valueOf(lastSongId));
-        httpHandler.executeWithReturn(RestClient::getPlaylistSongs, params, this::onSongsLoaded);
+        backgroundHttpExecutor.executeWithReturn(RestClient::getPlaylistSongs, params, this::onSongsLoaded);
     }
 
     private void loadGenreSongs(final long genreId, final long lastId) {
@@ -153,7 +147,7 @@ public class SongListFragment extends Fragment {
         Map<String, String> params = new HashMap<String, String>();
         params.put("id", String.valueOf(genreId));
         params.put("last_id", String.valueOf(lastSongId));
-        httpHandler.executeWithReturn(RestClient::getGenreSongs, params, this::onSongsLoaded);
+        backgroundHttpExecutor.executeWithReturn(RestClient::getGenreSongs, params, this::onSongsLoaded);
     }
 
     public void onSongsLoaded(HttpResponseWithData<List<Song>> event) {
@@ -223,18 +217,6 @@ public class SongListFragment extends Fragment {
         }
         else {
             switchRecyclerView(false);
-        }
-    }
-
-    @Subscribe(threadMode = ThreadMode.MAIN)
-    public void onEvent(SongsLoadedEvent event) {
-        if (progressBar.getVisibility() == View.VISIBLE)
-            progressBar.setVisibility(View.GONE);
-        if (event.isSuccess()) {
-            recyclerLoadData(event.getSongList());
-        }
-        else {
-            AlertDialogGenerator.MakeAlertDialog(getActivity(), "Ошибка загрузки", event.getMessage());
         }
     }
 
