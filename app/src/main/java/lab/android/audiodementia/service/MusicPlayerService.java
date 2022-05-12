@@ -110,7 +110,7 @@ public class MusicPlayerService extends Service implements
 
     public int getPlayerPosition() {
         if (player != null)
-            return player.getCurrentPosition();
+            return player.getCurrentPosition() / 1000;
         return 0;
     }
 

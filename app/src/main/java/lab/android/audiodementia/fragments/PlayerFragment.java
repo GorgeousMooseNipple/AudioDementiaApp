@@ -149,7 +149,8 @@ public class PlayerFragment extends Fragment {
                 if (mediaController != null &&
                         fromUser &&
                         mediaController.getPlaybackState().getState() == PlaybackStateCompat.STATE_PLAYING) {
-                    mediaController.getTransportControls().seekTo(progress);
+                    // It needs milliseconds, therefore "* 1000"
+                    mediaController.getTransportControls().seekTo(progress * 1000);
                 }
             }
 
