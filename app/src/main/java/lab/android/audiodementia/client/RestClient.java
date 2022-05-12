@@ -59,7 +59,7 @@ public class RestClient {
 
     public static ConnectionCheckEvent checkConnection(int timeout) {
         try{
-            URL url = new URL(BASE_URL + "/media/genres/top");
+            URL url = new URL(BASE_URL + "/media/genre/top");
             HttpURLConnection connection = (HttpURLConnection) url.openConnection();
             connection.setConnectTimeout(timeout);
             connection.connect();
@@ -223,7 +223,7 @@ public class RestClient {
     public static UserSignInEvent signIn(String username, String pass) {
         Map<String, String> params = new HashMap<String, String>();
         try {
-            String url = "/auth/token";
+            String url = "/auth/token/new";
             Map<String, String> headers = new HashMap<String, String>();
             String auth = String.format("%s:%s", username, pass);
             auth = Base64.encodeToString(auth.getBytes(), Base64.DEFAULT);
@@ -265,7 +265,7 @@ public class RestClient {
 
     public static HttpResponse register(Map<String, String> params) {
         try {
-            URL url = new URL(BASE_URL + "/auth/register");
+            URL url = new URL(BASE_URL + "/auth/user/new");
             JSONObject response = requestWithData("POST", url, params);
 
             String message = response.getString("message");
@@ -282,7 +282,7 @@ public class RestClient {
 
     public static HttpResponseWithData<List<Genre>> getGenres() {
         try {
-            JSONObject response = getRequest("/media/genres/top", null, true);
+            JSONObject response = getRequest("/media/genre/top", null, true);
             String message = response.getString("message");
 
             if (response.getInt("status_code") == HttpURLConnection.HTTP_OK) {
@@ -313,7 +313,7 @@ public class RestClient {
             String token = params.remove("token");
             Map<String, String> headers = new HashMap<>();
             headers.put("Authorization", String.format("Bearer %s", token));
-            JSONObject response = getRequestWithHeaders("/media/playlists/user", params, headers, true);
+            JSONObject response = getRequestWithHeaders("/media/user/playlists", params, headers, true);
             String message = response.getString("message");
 
             if (response.getInt("status_code") == HttpURLConnection.HTTP_OK) {
@@ -346,7 +346,7 @@ public class RestClient {
     public static HttpResponseWithData<List<Album>> getAlbumsByTitle(Map<String, String> params) {
 
         try {
-            JSONObject response = getRequest("/media/albums/search", params, false);
+            JSONObject response = getRequest("/media/album/title", params, false);
 
             String message = response.getString("message");
 
@@ -392,7 +392,7 @@ public class RestClient {
         Map<String, String> headers = new HashMap<>();
         headers.put("Authorization", String.format("Bearer %s", userToken));
         try {
-            URL url = new URL(BASE_URL + "/media/playlists/add");
+            URL url = new URL(BASE_URL + "/media/playlist/new");
             JSONObject response = requestWithDataAndHeaders("PUT", url, params, headers);
 
             try {
@@ -422,7 +422,7 @@ public class RestClient {
         Map<String, String> headers = new HashMap<>();
         headers.put("Authorization", String.format("Bearer %s", userToken));
         try {
-            URL url = new URL(BASE_URL + "/media/playlists/add/song");
+            URL url = new URL(BASE_URL + "/media/playlist/song/add");
             JSONObject response = requestWithDataAndHeaders("PUT", url, params, headers);
 
             String message = response.getString("message");
@@ -465,7 +465,7 @@ public class RestClient {
                         String coverSmall = o.getString("cover_small");
                         String coverMedium = o.getString("cover_medium");
                         // TODO: fix this mess
-                        String uri = BASE_URL + "/media/songs/play?id=" + id;
+                        String uri = BASE_URL + "/media/song/play?id=" + id;
                         songs.add(new Song(id, songTitle, artistName,
                                 albumTitle, duration, coverSmall, coverMedium, uri));
                     }
@@ -483,27 +483,27 @@ public class RestClient {
     }
 
     public static HttpResponseWithData<List<Song>> getGenreSongs(Map<String, String> params) {
-        String url = "/media/songs/genre";
+        String url = "/media/genre/songs";
         return getSongs(url, params);
     }
 
     public static HttpResponseWithData<List<Song>> getSongsByTitle(Map<String, String> params) {
-        String url = "/media/songs/search";
+        String url = "/media/song/title";
         return getSongs(url, params);
     }
 
     public static HttpResponseWithData<List<Song>> getSongsByArtist(Map<String, String> params) {
-        String url = "/media/songs/artist";
+        String url = "/media/song/artist";
         return getSongs(url, params);
     }
 
     public static HttpResponseWithData<List<Song>> getAlbumSongs(Map<String, String> params) {
-        String url = "/media/songs/album";
+        String url = "/media/album/songs";
         return getSongs(url, params);
     }
 
     public static HttpResponseWithData<List<Song>> getPlaylistSongs(Map<String, String> params) {
-        String url = "/media/songs/playlist";
+        String url = "/media/playlist/songs";
         return getSongs(url, params);
     }
 }
