@@ -59,11 +59,16 @@ public class RestClient {
 
     public static ConnectionCheckEvent checkConnection(int timeout) {
         try{
-            URL url = new URL(BASE_URL + "/media/genre/top");
+            URL url = new URL(BASE_URL + "/media/ping");
             HttpURLConnection connection = (HttpURLConnection) url.openConnection();
             connection.setConnectTimeout(timeout);
             connection.connect();
-            return new ConnectionCheckEvent(true, "Connected");
+            int status = connection.getResponseCode();
+            if(status == 200) {
+                return new ConnectionCheckEvent(true, "Connected");
+            } else {
+                return new ConnectionCheckEvent(false, "Can't connect");
+            }
         } catch (Exception e) {
             return new ConnectionCheckEvent(false, "Can't connect");
         }
