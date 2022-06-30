@@ -61,6 +61,11 @@ public class UserSession {
         }
     }
 
+    public void setToken(String token) {
+        editor.putString("TOKEN", token);
+        editor.commit();
+    }
+
     public String getRefresh()
     {
         if (!preferences.contains("REFRESH")) {
@@ -69,6 +74,11 @@ public class UserSession {
         else {
             return preferences.getString("REFRESH", null);
         }
+    }
+
+    public void setRefresh(String refreshToken) {
+        editor.putString("REFRESH", refreshToken);
+        editor.commit();
     }
 
     public long getId()
