@@ -285,6 +285,27 @@ public class RestClient {
         }
     }
 
+    public static RefreshTokenEvent refreshToken(String refreshToken) {
+        try {
+            URL url = new URL(BASE_URL + "/auth/token/refresh");
+            HashMap<String, String> params = new HashMap<>();
+            params.put("refresh_token", refreshToken);
+            JSONObject response = requestWithData("POST", url, params);
+
+            String message = response.getString("message");
+            int statusCode = response.getInt("status_code");
+            if (statusCode == HttpURLConnection.HTTP_OK) {
+                String accessToken = response.getString("access_token");
+                return new RefreshTokenEvent(true, message, accessToken);
+            } else {
+                return new RefreshTokenEvent(false, message, null);
+            }
+        }
+        catch (Exception e) {
+            return null;
+        }
+    }
+
     public static HttpResponseWithData<List<Genre>> getGenres() {
         try {
             JSONObject response = getRequest("/media/genre/top", null, true);
