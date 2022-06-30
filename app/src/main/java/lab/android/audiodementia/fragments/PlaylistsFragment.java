@@ -26,6 +26,7 @@ import lab.android.audiodementia.adapters.RecyclerViewPlaylistAdapter;
 import lab.android.audiodementia.background.Background;
 import lab.android.audiodementia.background.BackgroundHttpExecutor;
 import lab.android.audiodementia.background.NewPlaylistAddedEvent;
+import lab.android.audiodementia.background.RefreshTokenEvent;
 import lab.android.audiodementia.client.HttpResponseWithData;
 import lab.android.audiodementia.client.RestClient;
 import lab.android.audiodementia.model.Playlist;
@@ -43,12 +44,14 @@ public class PlaylistsFragment extends Fragment {
     private ViewSwitcher switcher;
     private ArrayList<Playlist> playlistList;
     private BackgroundHttpExecutor backgroundHttpExecutor;
+    private boolean triedToRefresh;
 
     @Override
     public void onCreate(Bundle savedInstance) {
         super.onCreate(savedInstance);
         session = new UserSession(getActivity());
         backgroundHttpExecutor = new BackgroundHttpExecutor();
+        triedToRefresh = false;
     }
 
     @Override
@@ -92,6 +95,7 @@ public class PlaylistsFragment extends Fragment {
 
     public void onPlaylistsLoaded(HttpResponseWithData<List<Playlist>> event) {
         if (event.isSuccess()) {
+            triedToRefresh = false;
             ArrayList<Playlist> playlists = (ArrayList<Playlist>) event.getData();
             if(playlists.size() > 0) {
                 this.playlistList = playlists;
@@ -99,6 +103,10 @@ public class PlaylistsFragment extends Fragment {
             }
         }
         else {
+            if (event.isUnauthorized() && !triedToRefresh) {
+                background.postEvent(RestClient.refreshToken(session.getRefresh()));
+                triedToRefresh = true;
+            }
             AlertDialogGenerator.MakeAlertDialog(getActivity(), "Error while loading playlists", event.getMessage());
         }
     }
@@ -122,6 +130,18 @@ public class PlaylistsFragment extends Fragment {
         }
         else {
             AlertDialogGenerator.MakeAlertDialog(getActivity(), "Error while adding playlist", event.getMessage());
+        }
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onRefreshToken(RefreshTokenEvent event) {
+        if (event.isSuccessful()) {
+            String accessToken = event.getAccessToken();
+            session.setToken(accessToken);
+            loadPlaylists();
+        }
+        else {
+            AlertDialogGenerator.MakeAlertDialog(getActivity(), "Error refreshing access token", event.getMessage());
         }
     }
 

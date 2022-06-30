@@ -11,6 +11,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ViewSwitcher;
 
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -21,7 +24,9 @@ import lab.android.audiodementia.activities.BaseActivity;
 import lab.android.audiodementia.adapters.OnRecyclerItemClickListener;
 import lab.android.audiodementia.adapters.RecyclerViewGenreAdapter;
 import lab.android.audiodementia.adapters.RecyclerViewPlaylistAdapter;
+import lab.android.audiodementia.background.Background;
 import lab.android.audiodementia.background.BackgroundHttpExecutor;
+import lab.android.audiodementia.background.RefreshTokenEvent;
 import lab.android.audiodementia.client.HttpResponseWithData;
 import lab.android.audiodementia.client.RestClient;
 import lab.android.audiodementia.model.Genre;
@@ -39,12 +44,15 @@ public class MainFragment extends Fragment {
     private ArrayList<Playlist> playlistList;
     private ViewSwitcher genresSwitcher;
     private ViewSwitcher playlistsSwitcher;
+    private Background background = Background.getInstance();
     private BackgroundHttpExecutor backgroundHttpExecutor;
     private Handler handler;
+    private boolean triedToRefresh;
 
     @Override
     public void onCreate(Bundle savedInstance) {
         super.onCreate(savedInstance);
+        triedToRefresh = false;
         session = new UserSession(getActivity());
         handler = new Handler();
         backgroundHttpExecutor = new BackgroundHttpExecutor(handler);
@@ -105,6 +113,7 @@ public class MainFragment extends Fragment {
 
     public void onPlaylistsLoaded(HttpResponseWithData<List<Playlist>> event) {
         if (event.isSuccess()) {
+            triedToRefresh = false;
             ArrayList<Playlist> playlists = (ArrayList<Playlist>) event.getData();
             if(playlists.size() > 0) {
                 this.playlistList = playlists;
@@ -112,7 +121,23 @@ public class MainFragment extends Fragment {
             }
         }
         else {
+            if (event.isUnauthorized() && !triedToRefresh) {
+                background.postEvent(RestClient.refreshToken(session.getRefresh()));
+                triedToRefresh = true;
+            }
             AlertDialogGenerator.MakeAlertDialog(getActivity(), "Error while loading playlists", event.getMessage());
+        }
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onRefreshToken(RefreshTokenEvent event) {
+        if (event.isSuccessful()) {
+            String accessToken = event.getAccessToken();
+            session.setToken(accessToken);
+            loadPlaylists();
+        }
+        else {
+            AlertDialogGenerator.MakeAlertDialog(getActivity(), "Error refreshing access token", event.getMessage());
         }
     }
 
