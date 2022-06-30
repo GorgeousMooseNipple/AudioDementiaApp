@@ -303,7 +303,7 @@ public class RestClient {
             }
         }
         catch (Exception e) {
-            return null;
+            return new RefreshTokenEvent(false, e.getMessage(), null);
         }
     }
 
@@ -332,7 +332,7 @@ public class RestClient {
             }
         }
         catch (JSONException e) {
-            return null;
+            return new HttpResponseWithData<>(false, HttpURLConnection.HTTP_INTERNAL_ERROR, e.getMessage(), null);
         }
     }
 
@@ -368,7 +368,7 @@ public class RestClient {
             }
         }
         catch (JSONException e) {
-            return null;
+            return new HttpResponseWithData<>(false, HttpURLConnection.HTTP_INTERNAL_ERROR, e.getMessage(), null);
         }
     }
 
@@ -427,21 +427,22 @@ public class RestClient {
 
             try {
                 String message = response.getString("message");
-                if (response.getInt("status_code") == HttpURLConnection.HTTP_OK) {
+                int statusCode = response.getInt("status_code");
+                if (statusCode == HttpURLConnection.HTTP_OK) {
                     long id = response.getLong("id");
                     String title = response.getString("title");
                     long trackCount = response.getLong("song_count");
                     Playlist newPlaylist = new Playlist(id, title, trackCount);
-                    return new NewPlaylistAddedEvent(true, message, newPlaylist);
+                    return new NewPlaylistAddedEvent(true, statusCode, message, newPlaylist);
                 } else {
-                    return new NewPlaylistAddedEvent(false, message, null);
+                    return new NewPlaylistAddedEvent(false, statusCode, message, null);
                 }
             } catch (Exception ex) {
-                return new NewPlaylistAddedEvent(false, "Exception", null);
+                return new NewPlaylistAddedEvent(false, HttpURLConnection.HTTP_INTERNAL_ERROR, ex.getMessage(), null);
             }
         }
         catch (Exception e) {
-            return null;
+            return new NewPlaylistAddedEvent(false, HttpURLConnection.HTTP_INTERNAL_ERROR, e.getMessage(), null);
         }
     }
 
