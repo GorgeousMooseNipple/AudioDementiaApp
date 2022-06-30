@@ -4,8 +4,8 @@ public class HttpResponseWithData<Data> extends HttpResponse {
 
     private Data data;
 
-    HttpResponseWithData(boolean successful, String message, Data data) {
-        super(successful, message);
+    HttpResponseWithData(boolean successful, int statusCode, String message, Data data) {
+        super(successful, statusCode, message);
         this.data = data;
     }
 

@@ -10,7 +10,10 @@ import android.widget.EditText;
 
 import lab.android.audiodementia.R;
 import lab.android.audiodementia.background.Background;
+import lab.android.audiodementia.background.NewPlaylistAddedEvent;
+import lab.android.audiodementia.background.RefreshTokenEvent;
 import lab.android.audiodementia.client.RestClient;
+import lab.android.audiodementia.user.UserSession;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -19,16 +22,14 @@ import java.util.Map;
 public class AddPlaylistDialogListener implements View.OnClickListener {
 
     private Background background = Background.getInstance();
-    private long userId;
     private Context context;
     private View view;
-    private String userToken;
+    private UserSession session;
 
-    public AddPlaylistDialogListener(Context context, View view, long userId, String userToken) {
+    public AddPlaylistDialogListener(Context context, View view, UserSession session) {
         this.context = context;
         this.view = view;
-        this.userId = userId;
-        this.userToken = userToken;
+        this.session = session;
     }
 
     @Override
@@ -54,7 +55,15 @@ public class AddPlaylistDialogListener implements View.OnClickListener {
                 background.execute(new Runnable() {
                     @Override
                     public void run() {
-                        background.postEvent(RestClient.addNewPlaylist(playlistTitle, userId, userToken));
+                        NewPlaylistAddedEvent response = RestClient.addNewPlaylist(playlistTitle, session.getId(), session.getToken());
+                        if (response.isUnauthorized()) {
+                            RefreshTokenEvent refreshTokenEvent = RestClient.refreshToken(session.getRefresh());
+                            if (refreshTokenEvent.isSuccessful()) {
+                                session.setToken(refreshTokenEvent.getAccessToken());
+                                response = RestClient.addNewPlaylist(playlistTitle, session.getId(), session.getToken());
+                            }
+                        }
+                        background.postEvent(response);
                     }
                 });
 

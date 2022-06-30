@@ -11,6 +11,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ViewSwitcher;
 
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -21,7 +24,9 @@ import lab.android.audiodementia.activities.BaseActivity;
 import lab.android.audiodementia.adapters.OnRecyclerItemClickListener;
 import lab.android.audiodementia.adapters.RecyclerViewGenreAdapter;
 import lab.android.audiodementia.adapters.RecyclerViewPlaylistAdapter;
+import lab.android.audiodementia.background.Background;
 import lab.android.audiodementia.background.BackgroundHttpExecutor;
+import lab.android.audiodementia.background.RefreshTokenEvent;
 import lab.android.audiodementia.client.HttpResponseWithData;
 import lab.android.audiodementia.client.RestClient;
 import lab.android.audiodementia.model.Genre;
@@ -39,12 +44,15 @@ public class MainFragment extends Fragment {
     private ArrayList<Playlist> playlistList;
     private ViewSwitcher genresSwitcher;
     private ViewSwitcher playlistsSwitcher;
+    private Background background = Background.getInstance();
     private BackgroundHttpExecutor backgroundHttpExecutor;
     private Handler handler;
+    private boolean triedToRefresh;
 
     @Override
     public void onCreate(Bundle savedInstance) {
         super.onCreate(savedInstance);
+        triedToRefresh = false;
         session = new UserSession(getActivity());
         handler = new Handler();
         backgroundHttpExecutor = new BackgroundHttpExecutor(handler);
@@ -53,11 +61,13 @@ public class MainFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
+        background.register(this);
     }
 
     @Override
     public void onPause() {
         super.onPause();
+        background.unregister(this);
     }
 
     @Override
@@ -84,10 +94,24 @@ public class MainFragment extends Fragment {
     }
 
     private void loadPlaylists() {
-        Map<String, String> params = new HashMap<>();
-        params.put("user_id", String.valueOf(session.getId()));
-        params.put("token", session.getToken());
-        backgroundHttpExecutor.executeWithReturn(RestClient::getUserPlaylists, params, this::onPlaylistsLoaded);
+        background.execute(new Runnable() {
+            @Override
+            public void run() {
+                Map<String, String> params = new HashMap<>();
+                params.put("user_id", String.valueOf(session.getId()));
+                params.put("token", session.getToken());
+                HttpResponseWithData<List<Playlist>> response = RestClient.getUserPlaylists(params);
+                if (response.isUnauthorized()) {
+                    RefreshTokenEvent refreshTokenEvent = RestClient.refreshToken(session.getRefresh());
+                    if (refreshTokenEvent.isSuccessful()) {
+                        session.setToken(refreshTokenEvent.getAccessToken());
+                        params.put("token", session.getToken());
+                        response = RestClient.getUserPlaylists(params);
+                    }
+                }
+                background.postEvent(response);
+            }
+        });
     }
 
     public void onGenresLoaded(HttpResponseWithData<List<Genre>> event) {
@@ -103,6 +127,7 @@ public class MainFragment extends Fragment {
         }
     }
 
+    @Subscribe(threadMode = ThreadMode.MAIN)
     public void onPlaylistsLoaded(HttpResponseWithData<List<Playlist>> event) {
         if (event.isSuccess()) {
             ArrayList<Playlist> playlists = (ArrayList<Playlist>) event.getData();
