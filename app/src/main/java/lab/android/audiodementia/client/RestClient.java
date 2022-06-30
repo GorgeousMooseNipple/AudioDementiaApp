@@ -274,10 +274,32 @@ public class RestClient {
             JSONObject response = requestWithData("POST", url, params);
 
             String message = response.getString("message");
-            if (response.getInt("status_code") == HttpURLConnection.HTTP_OK) {
-                return new HttpResponse(true, message);
+            int statusCode = response.getInt("status_code");
+            if (statusCode == HttpURLConnection.HTTP_OK) {
+                return new HttpResponse(true, statusCode, message);
             } else {
-                return new HttpResponse(false, message);
+                return new HttpResponse(false, statusCode, message);
+            }
+        }
+        catch (Exception e) {
+            return null;
+        }
+    }
+
+    public static RefreshTokenEvent refreshToken(String refreshToken) {
+        try {
+            URL url = new URL(BASE_URL + "/auth/token/refresh");
+            HashMap<String, String> params = new HashMap<>();
+            params.put("refresh_token", refreshToken);
+            JSONObject response = requestWithData("POST", url, params);
+
+            String message = response.getString("message");
+            int statusCode = response.getInt("status_code");
+            if (statusCode == HttpURLConnection.HTTP_OK) {
+                String accessToken = response.getString("access_token");
+                return new RefreshTokenEvent(true, message, accessToken);
+            } else {
+                return new RefreshTokenEvent(false, message, null);
             }
         }
         catch (Exception e) {
@@ -290,7 +312,8 @@ public class RestClient {
             JSONObject response = getRequest("/media/genre/top", null, true);
             String message = response.getString("message");
 
-            if (response.getInt("status_code") == HttpURLConnection.HTTP_OK) {
+            int statusCode = response.getInt("status_code");
+            if (statusCode == HttpURLConnection.HTTP_OK) {
                 String ar = response.getString("genres");
                 JsonArray genresList = new JsonParser().parse(ar).getAsJsonArray();
 
@@ -303,9 +326,9 @@ public class RestClient {
                     genres.add(new Genre(id, title));
                 }
 
-                return new HttpResponseWithData<>(true, message, genres);
+                return new HttpResponseWithData<>(true, statusCode, message, genres);
             } else {
-                return new HttpResponseWithData<>(false, message, null);
+                return new HttpResponseWithData<>(false, statusCode, message, null);
             }
         }
         catch (JSONException e) {
@@ -321,7 +344,8 @@ public class RestClient {
             JSONObject response = getRequestWithHeaders("/media/user/playlists", params, headers, true);
             String message = response.getString("message");
 
-            if (response.getInt("status_code") == HttpURLConnection.HTTP_OK) {
+            int statusCode = response.getInt("status_code");
+            if (statusCode == HttpURLConnection.HTTP_OK) {
                 if (response.has("playlists")) {
                     String ar = response.getString("playlists");
                     JsonArray playlistsList = new JsonParser().parse(ar).getAsJsonArray();
@@ -336,11 +360,11 @@ public class RestClient {
                         playlists.add(new Playlist(id, title, songCount));
                     }
 
-                    return new HttpResponseWithData<>(true, message, playlists);
+                    return new HttpResponseWithData<>(true, statusCode, message, playlists);
                 } else
-                    return new HttpResponseWithData<>(true, message, new ArrayList<>());
+                    return new HttpResponseWithData<>(true, statusCode, message, new ArrayList<>());
             } else {
-                return new HttpResponseWithData<>(false, message, null);
+                return new HttpResponseWithData<>(false, statusCode, message, null);
             }
         }
         catch (JSONException e) {
@@ -355,7 +379,8 @@ public class RestClient {
 
             String message = response.getString("message");
 
-            if (response.getInt("status_code") == HttpURLConnection.HTTP_OK) {
+            int statusCode = response.getInt("status_code");
+            if (statusCode == HttpURLConnection.HTTP_OK) {
                 if (response.has("albums")) {
                     JSONArray ar = response.getJSONArray("albums");
 
@@ -378,11 +403,11 @@ public class RestClient {
                         albums.add(new Album(id, albumTitle, artistName, coverSmall, coverMedium));
                     }
 
-                    return new HttpResponseWithData<>(true, message, albums);
+                    return new HttpResponseWithData<>(true, statusCode, message, albums);
                 } else
-                    return new HttpResponseWithData<>(true, message, new ArrayList<>());
+                    return new HttpResponseWithData<>(true, statusCode, message, new ArrayList<>());
             } else {
-                return new HttpResponseWithData<>(false, message, null);
+                return new HttpResponseWithData<>(false, statusCode, message, null);
             }
         }
         catch (JSONException e) {
@@ -431,10 +456,11 @@ public class RestClient {
             JSONObject response = requestWithDataAndHeaders("PUT", url, params, headers);
 
             String message = response.getString("message");
-            return new HttpResponse(true, message);
+            int statusCode = response.getInt("status_code");
+            return new HttpResponse(true, statusCode, message);
         }
         catch (Exception e) {
-            return new HttpResponse(false, e.getMessage());
+            return new HttpResponse(false, HttpURLConnection.HTTP_INTERNAL_ERROR, e.getMessage());
         }
     }
 
@@ -447,7 +473,8 @@ public class RestClient {
 
             String message = response.getString("message");
 
-            if (response.getInt("status_code") == HttpURLConnection.HTTP_OK) {
+            int statusCode = response.getInt("status_code");
+            if (statusCode == HttpURLConnection.HTTP_OK) {
                 if (response.has("songs")) {
                     JSONArray ar = response.getJSONArray("songs");
 
@@ -475,11 +502,11 @@ public class RestClient {
                                 albumTitle, duration, coverSmall, coverMedium, uri));
                     }
 
-                    return new HttpResponseWithData<>(true, message, songs);
+                    return new HttpResponseWithData<>(true, statusCode, message, songs);
                 } else
-                    return new HttpResponseWithData<>(true, message, new ArrayList<>());
+                    return new HttpResponseWithData<>(true, statusCode, message, new ArrayList<>());
             } else {
-                return new HttpResponseWithData<>(false, message, null);
+                return new HttpResponseWithData<>(false, statusCode, message, null);
             }
         }
         catch (JSONException e) {
