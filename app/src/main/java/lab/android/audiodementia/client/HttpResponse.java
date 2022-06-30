@@ -10,6 +10,7 @@ public class HttpResponse {
     HttpResponse(boolean successful, int statusCode, String message) {
         this.successful = successful;
         this.message = message;
+        this.statusCode = statusCode;
     }
 
     public boolean isSuccess() {
