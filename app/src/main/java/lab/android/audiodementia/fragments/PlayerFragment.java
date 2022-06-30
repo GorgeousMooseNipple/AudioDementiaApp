@@ -43,6 +43,7 @@ import lab.android.audiodementia.background.BackgroundHttpExecutor;
 import lab.android.audiodementia.background.NewPlaylistAddedEvent;
 import lab.android.audiodementia.background.PlaylistsUploadedEvent;
 import lab.android.audiodementia.background.RefreshTokenEvent;
+import lab.android.audiodementia.client.HttpResponse;
 import lab.android.audiodementia.client.HttpResponseWithData;
 import lab.android.audiodementia.client.RestClient;
 import lab.android.audiodementia.model.Playlist;
@@ -299,12 +300,27 @@ public class PlayerFragment extends Fragment {
     // PLAYLISTS
 
     private void loadPlaylists() {
-        Map<String, String> params = new HashMap<>();
-        params.put("user_id", String.valueOf(session.getId()));
-        params.put("token", session.getToken());
-        backgroundHttpExecutor.executeWithReturn(RestClient::getUserPlaylists, params, this::onPlaylistsLoaded);
+        background.execute(new Runnable() {
+            @Override
+            public void run() {
+                Map<String, String> params = new HashMap<>();
+                params.put("user_id", String.valueOf(session.getId()));
+                params.put("token", session.getToken());
+                HttpResponseWithData<List<Playlist>> response = RestClient.getUserPlaylists(params);
+                if (response.isUnauthorized()) {
+                    RefreshTokenEvent refreshTokenEvent = RestClient.refreshToken(session.getRefresh());
+                    if (refreshTokenEvent.isSuccessful()) {
+                        session.setToken(refreshTokenEvent.getAccessToken());
+                        params.put("token", session.getToken());
+                        response = RestClient.getUserPlaylists(params);
+                    }
+                }
+                background.postEvent(response);
+            }
+        });
     }
 
+    @Subscribe(threadMode = ThreadMode.MAIN)
     public void onPlaylistsLoaded(HttpResponseWithData<List<Playlist>> event) {
         if (event.isSuccess()) {
             triedToRefresh = false;
@@ -312,10 +328,6 @@ public class PlayerFragment extends Fragment {
             onDialogClick.adapter = new RecyclerViewPlaylistAdapter(onDialogClick.playlists);
         }
         else {
-            if (event.isUnauthorized() && !triedToRefresh) {
-                background.postEvent(RestClient.refreshToken(session.getRefresh()));
-                triedToRefresh = true;
-            }
             AlertDialogGenerator.MakeAlertDialog(getActivity(), "Error while loading playlists", event.getMessage());
         }
     }
@@ -332,24 +344,20 @@ public class PlayerFragment extends Fragment {
         }
     }
 
-    @Subscribe(threadMode = ThreadMode.MAIN)
-    public void onRefreshToken(RefreshTokenEvent event) {
-        if (event.isSuccessful()) {
-            String accessToken = event.getAccessToken();
-            session.setToken(accessToken);
-            loadPlaylists();
-        }
-        else {
-            AlertDialogGenerator.MakeAlertDialog(getActivity(), "Error refreshing access token", event.getMessage());
-        }
-    }
-
     private void addSongToPlaylist(final long playlist_id) {
         final long song_id = currentSongMeta.getLong("song_id");
         background.execute(new Runnable() {
             @Override
             public void run() {
-                RestClient.addSongToPlaylist(song_id, playlist_id, session.getToken());
+                HttpResponse response = RestClient.addSongToPlaylist(song_id, playlist_id, session.getToken());
+                if (response.isUnauthorized()) {
+                    RefreshTokenEvent refreshTokenEvent = RestClient.refreshToken(session.getRefresh());
+                    if (refreshTokenEvent.isSuccessful()) {
+                        session.setToken(refreshTokenEvent.getAccessToken());
+                        response = RestClient.addSongToPlaylist(song_id, playlist_id, session.getToken());
+                    }
+                }
+                background.postEvent(response);
             }
         });
     }
@@ -407,7 +415,7 @@ public class PlayerFragment extends Fragment {
                 }
             });
             playlistRecycler.setAdapter(adapter);
-            newPlaylist.setOnClickListener(new AddPlaylistDialogListener(getContext(), getView(), session.getId(), session.getToken()));
+            newPlaylist.setOnClickListener(new AddPlaylistDialogListener(getContext(), getView(), session));
             builder.setOnCancelListener(new DialogInterface.OnCancelListener() {
                 @Override
                 public void onCancel(DialogInterface dialog) {

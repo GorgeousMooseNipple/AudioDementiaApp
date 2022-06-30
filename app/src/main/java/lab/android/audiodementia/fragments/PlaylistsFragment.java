@@ -44,14 +44,12 @@ public class PlaylistsFragment extends Fragment {
     private ViewSwitcher switcher;
     private ArrayList<Playlist> playlistList;
     private BackgroundHttpExecutor backgroundHttpExecutor;
-    private boolean triedToRefresh;
 
     @Override
     public void onCreate(Bundle savedInstance) {
         super.onCreate(savedInstance);
         session = new UserSession(getActivity());
         backgroundHttpExecutor = new BackgroundHttpExecutor();
-        triedToRefresh = false;
     }
 
     @Override
@@ -66,7 +64,7 @@ public class PlaylistsFragment extends Fragment {
         playlistsRecycler = getView().findViewById(R.id.playlists_recycler);
         addNewPlaylist = getView().findViewById(R.id.playlist_add_button);
         addNewPlaylist.setOnClickListener(
-                new AddPlaylistDialogListener(getContext(), getView(), session.getId(), session.getToken()));
+                new AddPlaylistDialogListener(getContext(), getView(), session));
         switcher = getView().findViewById(R.id.playlists_recycler_switcher);
 
         playlistAdapter = new RecyclerViewPlaylistAdapter(new ArrayList<Playlist>());
@@ -87,15 +85,29 @@ public class PlaylistsFragment extends Fragment {
     }
 
     private void loadPlaylists() {
-        Map<String, String> params = new HashMap<>();
-        params.put("user_id", String.valueOf(session.getId()));
-        params.put("token", session.getToken());
-        backgroundHttpExecutor.executeWithReturn(RestClient::getUserPlaylists, params, this::onPlaylistsLoaded);
+        background.execute(new Runnable() {
+            @Override
+            public void run() {
+                Map<String, String> params = new HashMap<>();
+                params.put("user_id", String.valueOf(session.getId()));
+                params.put("token", session.getToken());
+                HttpResponseWithData<List<Playlist>> response = RestClient.getUserPlaylists(params);
+                if (response.isUnauthorized()) {
+                    RefreshTokenEvent refreshTokenEvent = RestClient.refreshToken(session.getRefresh());
+                    if (refreshTokenEvent.isSuccessful()) {
+                        session.setToken(refreshTokenEvent.getAccessToken());
+                        params.put("token", session.getToken());
+                        response = RestClient.getUserPlaylists(params);
+                    }
+                }
+                background.postEvent(response);
+            }
+        });
     }
 
+    @Subscribe(threadMode = ThreadMode.MAIN)
     public void onPlaylistsLoaded(HttpResponseWithData<List<Playlist>> event) {
         if (event.isSuccess()) {
-            triedToRefresh = false;
             ArrayList<Playlist> playlists = (ArrayList<Playlist>) event.getData();
             if(playlists.size() > 0) {
                 this.playlistList = playlists;
@@ -103,10 +115,6 @@ public class PlaylistsFragment extends Fragment {
             }
         }
         else {
-            if (event.isUnauthorized() && !triedToRefresh) {
-                background.postEvent(RestClient.refreshToken(session.getRefresh()));
-                triedToRefresh = true;
-            }
             AlertDialogGenerator.MakeAlertDialog(getActivity(), "Error while loading playlists", event.getMessage());
         }
     }
@@ -130,18 +138,6 @@ public class PlaylistsFragment extends Fragment {
         }
         else {
             AlertDialogGenerator.MakeAlertDialog(getActivity(), "Error while adding playlist", event.getMessage());
-        }
-    }
-
-    @Subscribe(threadMode = ThreadMode.MAIN)
-    public void onRefreshToken(RefreshTokenEvent event) {
-        if (event.isSuccessful()) {
-            String accessToken = event.getAccessToken();
-            session.setToken(accessToken);
-            loadPlaylists();
-        }
-        else {
-            AlertDialogGenerator.MakeAlertDialog(getActivity(), "Error refreshing access token", event.getMessage());
         }
     }
 
