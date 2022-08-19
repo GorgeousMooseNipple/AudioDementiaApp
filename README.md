@@ -1,7 +1,7 @@
 ## AudioDementia - music streaming android application
 
 Client app for [this server.](https://github.com/GorgeousMooseNipple/AudioDementiaServer)  
-The coolest part of this whole app are definitely theese logos created by my friend [@ChrisNotFound](https://github.com/ChrisNotFound):  
+The coolest part of this whole app are definitely these logos created by my friend [@ChrisNotFound](https://github.com/ChrisNotFound):  
 <img src="https://raw.githubusercontent.com/GorgeousMooseNipple/AudioDementiaApp/media/media/images/komb_1.png" width=200 vspace=10 align="left">
 <img src="https://raw.githubusercontent.com/GorgeousMooseNipple/AudioDementiaApp/media/media/images/komb_3.png" width=200 vspace=10 align="center">
 
